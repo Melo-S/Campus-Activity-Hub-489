@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>SCR-S04 — Home Feed (Now / Today / Friends)</title>
+  <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css' rel='stylesheet'>
+  <link href='../assets/css/styles.css' rel='stylesheet'>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg bg-white border-bottom">
+  <div class="container">
+    <a class="navbar-brand" href="../index.html">Campus Activity Hub</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample" aria-controls="navbarsExample" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarsExample">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="../index.html#students">Students</a></li>
+        <li class="nav-item"><a class="nav-link" href="../index.html#organizers">Organizer Portal</a></li>
+        <li class="nav-item"><a class="nav-link" href="../index.html#admin">Admin</a></li>
+        <li class="nav-item"><a class="nav-link" href="../index.html#mapping">Use Case Mapping</a></li>
+      </ul>
+      <div class="d-flex gap-2">
+        <a class="btn btn-outline-primary btn-sm" href="SCR-S03-login.html">Login</a>
+        <a class="btn btn-primary btn-sm" href="SCR-S02-register.html">Sign Up</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class='container my-4'>
+  <div class='d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3'>
+    <div>
+      <div class='pill mb-2'>Student</div>
+      <h1 class='h3 mb-1'>SCR-S04: Home Feed (Now / Today / Friends)</h1>
+      <div class='text-muted'>Primary hub with tabs for live statuses, today activities, and friends feed.</div>
+    </div>
+    <div class='text-end'>
+      <span class='badge bg-primary'>Mockup</span>
+    </div>
+  </div>
+  <div class='mb-3'>
+    <div class='fw-semibold mb-1'>Use cases covered</div>
+    <div class='d-flex flex-wrap gap-1'><span class='badge bg-info text-dark me-1 mb-1'>UC-S03</span><span class='badge bg-info text-dark me-1 mb-1'>UC-S07</span><span class='badge bg-info text-dark me-1 mb-1'>UC-S09</span><span class='badge bg-info text-dark me-1 mb-1'>UC-S10</span></div>
+  </div>
+  
+    <div class='tab-card'>
+      <ul class='nav nav-tabs mb-3' role='tablist'>
+        <li class='nav-item'><a class='nav-link active' data-bs-toggle='tab' href='#tab0'>Happening Now</a></li><li class='nav-item'><a class='nav-link ' data-bs-toggle='tab' href='#tab1'>Today</a></li><li class='nav-item'><a class='nav-link ' data-bs-toggle='tab' href='#tab2'>Friends</a></li>
+      </ul>
+      <div class='tab-content'>
+        <div class='tab-pane fade show active' id='tab0'><div class='wireframe-placeholder'>Content for Happening Now</div></div><div class='tab-pane fade ' id='tab1'><div class='wireframe-placeholder'>Content for Today</div></div><div class='tab-pane fade ' id='tab2'><div class='wireframe-placeholder'>Content for Friends</div></div>
+      </div>
+    </div>
+    
+  
+  
+  <div class='mb-3'><div class='fw-semibold mb-1'>Primary UI Components</div><div class='d-flex flex-wrap gap-1'><span class='badge badge-soft me-1 mb-1'>Top nav</span><span class='badge badge-soft me-1 mb-1'>Tabs + filters/sort</span><span class='badge badge-soft me-1 mb-1'>Refresh button</span></div></div>
+  <div class='mb-3'><div class='fw-semibold mb-1'>Primary Actions</div><div class='d-flex flex-wrap gap-1'><span class='badge badge-soft me-1 mb-1'>Open facility</span><span class='badge badge-soft me-1 mb-1'>Open activity</span><span class='badge badge-soft me-1 mb-1'>Create activity</span><span class='badge badge-soft me-1 mb-1'>Switch tabs</span></div></div>
+  
+  
+<footer class="footer text-center">Campus Activity Hub — Mid Deliverable Mockups & Wireframes</footer>
+
+</main>
+<script src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js'></script>
+</body>
+</html>

@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>Campus Activity Hub — Mockups & Mapping</title>
+  <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css' rel='stylesheet'>
+  <link href='assets/css/styles.css' rel='stylesheet'>
+</head>
+<body>
+<nav class='navbar navbar-expand-lg bg-white border-bottom'>
+  <div class='container'>
+    <a class='navbar-brand' href='#'>Campus Activity Hub</a>
+    <div class='d-flex gap-2'>
+      <a class='btn btn-outline-primary btn-sm' href='screens/SCR-S03-login.html'>Login</a>
+      <a class='btn btn-primary btn-sm' href='screens/SCR-S02-register.html'>Sign Up</a>
+    </div>
+  </div>
+</nav>
+<main class='container my-4'>
+  <section class='hero mb-4'>
+    <div class='row align-items-center'>
+      <div class='col-md-7'>
+        <p class='pill mb-2'>Mid Deliverable — UI Mockups & Wireframes</p>
+        <h1>Campus Activity Hub</h1>
+        <p class='lead'>HTML mockups + wireframes aligned to your use cases. Roles: Student, Organizer/Staff, Admin.</p>
+        <div class='d-flex gap-2'>
+          <a class='btn btn-primary' href='#students'>View Screens</a>
+          <a class='btn btn-outline-primary' href='#mapping'>Use Case Mapping</a>
+        </div>
+      </div>
+      <div class='col-md-5'>
+        <div class='card-cta p-3'>
+          <div class='fw-semibold mb-2'>Submission contents</div>
+          <ul class='mb-0'>
+            <li>23 screens (mockups + wireframes) across all roles</li>
+            <li>Bootstrap + shared custom theme</li>
+            <li>Bidirectional use case ↔ screen mapping</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id='students' class='mb-5'>
+    <h2 class='h4 mb-3'>Student Screens</h2>
+    <div class='row'>
+      
+    <div class='col-md-4 mb-3'>
+      <div class='status-card h-100'>
+        <div class='d-flex justify-content-between align-items-center'>
+          <div class='fw-semibold'>SCR-S01: Landing (Public)</div>
+          <span class='badge bg-primary'>Mockup</span>
+        </div>
+        <div class='small text-muted mb-2'>Guest / Student</div>
+        <div class='mb-2'>Introduce the app with CTA for Login/Register and preview of Happening Now.</div>
+        <div class='mb-2'><span class='badge bg-info text-dark'>UC-S01, UC-S02, UC-S03</span></div>
+        <a class='btn btn-sm btn-outline-primary' href='screens/SCR-S01-landing.html'>Open screen</a>
+      </div>
+    </div>
+    
+    <div class='col-md-4 mb-3'>
+      <div class='status-card h-100'>
+        <div class='d-flex justify-content-between align-items-center'>
+          <div class='fw-semibold'>SCR-S02: Register</div>
+          <span class='badge bg-primary'>Mockup</span>
+        </div>
+        <div class='small text-muted mb-2'>Guest → Student</div>
+        <div class='mb-2'>Create a new user account with name, email, and password.</div>
+        <div class='mb-2'><span class='badge bg-info text-dark'>UC-S01</span></div>
+        <a class='btn btn-sm btn-outline-primary' href='screens/SCR-S02-register.html'>Open screen</a>
+      </div>
+    </div>
+    
+    <div class='col-md-4 mb-3'>
+      <div class='status-card h-100'>
+        <div class='d-flex justify-content-between align-items-center'>
+          <div class='fw-semibold'>SCR-S03: Login</div>
+          <span class='badge bg-primary'>Mockup</span>
+        </div>
+        <div class='small text-muted mb-2'>Student / Organizer / Admin</div>
+        <div class='mb-2'>Authenticate and route to the correct home page by role.</div>
+        <div class='mb-2'><span class='badge bg-info text-dark'>UC-S02</span></div>
+        <a class='btn btn-sm btn-outline-primary' href='screens/SCR-S03-login.html'>Open screen</a>
+      </div>
+    </div>
+    
+    <div class='col-md-4 mb-3'>
+      <div class='status-card h-100'>
+        <div class='d-flex justify-content-between align-items-center'>
+          <div class='fw-semibold'>SCR-S04: Home Feed (Now / Today / Friends)</div>
+          <span class='badge bg-primary'>Mockup</span>
+        </div>
+        <div class='small text-muted mb-2'>Student</div>
+        <div class='mb-2'>Primary hub with tabs for live statuses, today activities, and friends feed.</div>
+        <div class='mb-2'><span class='badge bg-info text-dark'>UC-S03, UC-S07, UC-S09, UC-S10</span></div>
+        <a class='btn btn-sm btn-outline-primary' href='screens/SCR-S04-home-feed.html'>Open screen</a>
+      </div>
+    </div>
+    
+    <div class='col-md-4 mb-3'>
+      <div class='status-card h-100'>
+        <div class='d-flex justify-content-between align-items-center'>
+          <div class='fw-semibold'>SCR-S05: Facility Dashboard / Directory</div>
+          <span class='badge bg-primary'>Mockup</span>
+        </div>
+        <div class='small text-muted mb-2'>Student</div>
+        <div class='mb-2'>Browse/search all locations with current status and last-updated.</div>
+        <div class='mb-2'><span class='badge bg-info text-dark'>UC-S03, UC-S04</span></div>
+        <a class='btn btn-sm btn-outline-primary' href='screens/SCR-S05-facility-dashboard.html'>Open screen</a>
+      </div>
+    </div>
+    
+    <div class='col-md-4 mb-3'>
+      <div class='status-card h-100'>
+        <div class='d-flex justify-content-between align-items-center'>
+          <div class='fw-semibold'>SCR-S06: Facility Detail & Status History</div>
+          <span class='badge bg-primary'>Mockup</span>
+        </div>
+        <div class='small text-muted mb-2'>Student</div>
+        <div class='mb-2'>Current status, history feed, post updates, vote, report, related activities.</div>
+        <div class='mb-2'><span class='badge bg-info text-dark'>UC-S04, UC-S05, UC-S06, UC-S12</span></div>
+        <a class='btn btn-sm btn-outline-primary' href='screens/SCR-S06-facility-detail.html'>Open screen</a>
+      </div>
+    </div>
+    
+    <div class='col-md-4 mb-3'>
+      <div class='status-card h-100'>
+        <div class='d-flex justify-content-between align-items-center'>
+          <div class='fw-semibold'>SCR-S07: Post Crowd Update</div>
+          <span class='badge bg-primary'>Mockup</span>
+        </div>
+        <div class='small text-muted mb-2'>Student</div>
+        <div class='mb-2'>Submit a busy-level update that auto-expires.</div>
+        <div class='mb-2'><span class='badge bg-info text-dark'>UC-S05</span></div>
+        <a class='btn btn-sm btn-outline-primary' href='screens/SCR-S07-post-crowd-update.html'>Open screen</a>
+      </div>
+    </div>
+    
+    <div class='col-md-4 mb-3'>
+      <div class='status-card h-100'>
+        <div class='d-flex justify-content-between align-items-center'>
+          <div class='fw-semibold'>SCR-S08: Vote Confirm / Disagree</div>
+          <span class='badge bg-primary'>Mockup</span>
+        </div>
+        <div class='small text-muted mb-2'>Student</div>
+        <div class='mb-2'>Confirm or disagree with a crowd status update.</div>
+        <div class='mb-2'><span class='badge bg-info text-dark'>UC-S06</span></div>
+        <a class='btn btn-sm btn-outline-primary' href='screens/SCR-S08-vote-update.html'>Open screen</a>
+      </div>
+    </div>
+    
+    <div class='col-md-4 mb-3'>
+      <div class='status-card h-100'>
+        <div class='d-flex justify-content-between align-items-center'>
+          <div class='fw-semibold'>SCR-S09: Create Activity</div>
+          <span class='badge bg-primary'>Mockup</span>
+        </div>
+        <div class='small text-muted mb-2'>Student</div>
+        <div class='mb-2'>Create an activity and publish it to Today feed.</div>
+        <div class='mb-2'><span class='badge bg-info text-dark'>UC-S07</span></div>
+        <a class='btn btn-sm btn-outline-primary' href='screens/SCR-S09-create-activity.html'>Open screen</a>
+      </div>
+    </div>
+    
+    <div class='col-md-4 mb-3'>
+      <div class='status-card h-100'>
+        <div class='d-flex justify-content-between align-items-center'>
+          <div class='fw-semibold'>SCR-S10: Activity Detail</div>
+          <span class='badge bg-primary'>Mockup</span>
+        </div>
+        <div class='small text-muted mb-2'>Student</div>
+        <div class='mb-2'>View details; RSVP join/leave; invite friends; report content.</div>
+        <div class='mb-2'><span class='badge bg-info text-dark'>UC-S08, UC-S11, UC-S12</span></div>
+        <a class='btn btn-sm btn-outline-primary' href='screens/SCR-S10-activity-detail.html'>Open screen</a>
+      </div>
+    </div>
+    
+    <div class='col-md-4 mb-3'>
+      <div class='status-card h-100'>
+        <div class='d-flex justify-content-between align-items-center'>
+          <div class='fw-semibold'>SCR-S11: My Schedule</div>
+          <span class='badge bg-secondary'>Wireframe</span>
+        </div>
+        <div class='small text-muted mb-2'>Student</div>
+        <div class='mb-2'>View upcoming (and optional past) activities created/joined.</div>
+        <div class='mb-2'><span class='badge bg-info text-dark'>UC-S09</span></div>
+        <a class='btn btn-sm btn-outline-primary' href='screens/SCR-S11-my-schedule.html'>Open screen</a>
+      </div>
+    </div>
+    
+    <div class='col-md-4 mb-3'>
+      <div class='status-card h-100'>
+        <div class='d-flex justify-content-between align-items-center'>
+          <div class='fw-semibold'>SCR-S12: Friends</div>
+          <span class='badge bg-secondary'>Wireframe</span>
+        </div>
+        <div class='small text-muted mb-2'>Student</div>
+        <div class='mb-2'>Search users; send requests; accept/decline; manage friends.</div>
+        <div class='mb-2'><span class='badge bg-info text-dark'>UC-S10</span></div>
+        <a class='btn btn-sm btn-outline-primary' href='screens/SCR-S12-friends.html'>Open screen</a>
+      </div>
+    </div>
+    
+    <div class='col-md-4 mb-3'>
+      <div class='status-card h-100'>
+        <div class='d-flex justify-content-between align-items-center'>
+          <div class='fw-semibold'>SCR-S13: Invites & Notifications</div>
+          <span class='badge bg-secondary'>Wireframe</span>
+        </div>
+        <div class='small text-muted mb-2'>Student</div>
+        <div class='mb-2'>View activity invites and system notifications.</div>
+        <div class='mb-2'><span class='badge bg-info text-dark'>UC-S11</span></div>
+        <a class='btn btn-sm btn-outline-primary' href='screens/SCR-S13-invites.html'>Open screen</a>
+      </div>
+    </div>
+    
+    <div class='col-md-4 mb-3'>
+      <div class='status-card h-100'>
+        <div class='d-flex justify-content-between align-items-center'>
+          <div class='fw-semibold'>SCR-S14: Report Content</div>
+          <span class='badge bg-secondary'>Wireframe</span>
+        </div>
+        <div class='small text-muted mb-2'>Student</div>
+        <div class='mb-2'>Submit a report for an activity or status update.</div>
+        <div class='mb-2'><span class='badge bg-info text-dark'>UC-S12</span></div>
+        <a class='btn btn-sm btn-outline-primary' href='screens/SCR-S14-report-content.html'>Open screen</a>
+      </div>
+    </div>
+    
+    </div>
+  </section>
+  <section id='organizers' class='mb-5'>
+    <h2 class='h4 mb-3'>Organizer/Staff Screens</h2>
+    <div class='row'>
+      
+    <div class='col-md-4 mb-3'>
+      <div class='status-card h-100'>
+        <div class='d-flex justify-content-between align-items-center'>
+          <div class='fw-semibold'>SCR-O01: Organizer Application</div>
+          <span class='badge bg-primary'>Mockup</span>
+        </div>
+        <div class='small text-muted mb-2'>Organizer Candidate</div>
+        <div class='mb-2'>Request organizer verification for a facility.</div>
+        <div class='mb-2'><span class='badge bg-info text-dark'>UC-O01</span></div>
+        <a class='btn btn-sm btn-outline-primary' href='screens/SCR-O01-organizer-application.html'>Open screen</a>
+      </div>
+    </div>
+    
+    <div class='col-md-4 mb-3'>
+      <div class='status-card h-100'>
+        <div class='d-flex justify-content-between align-items-center'>
+          <div class='fw-semibold'>SCR-O02: Organizer Portal Dashboard</div>
+          <span class='badge bg-primary'>Mockup</span>
+        </div>
+        <div class='small text-muted mb-2'>Organizer/Staff</div>
+        <div class='mb-2'>Manage facilities, post verified updates, manage info, create official events, view reports.</div>
+        <div class='mb-2'><span class='badge bg-info text-dark'>UC-O02, UC-O03, UC-O04, UC-O05, UC-O06</span></div>
+        <a class='btn btn-sm btn-outline-primary' href='screens/SCR-O02-organizer-portal.html'>Open screen</a>
+      </div>
+    </div>
+    
+    <div class='col-md-4 mb-3'>
+      <div class='status-card h-100'>
+        <div class='d-flex justify-content-between align-items-center'>
+          <div class='fw-semibold'>SCR-O03: Post Verified Update</div>
+          <span class='badge bg-primary'>Mockup</span>
+        </div>
+        <div class='small text-muted mb-2'>Organizer/Staff</div>
+        <div class='mb-2'>Post an official status update that overrides crowd updates.</div>
+        <div class='mb-2'><span class='badge bg-info text-dark'>UC-O02</span></div>
+        <a class='btn btn-sm btn-outline-primary' href='screens/SCR-O03-post-verified-update.html'>Open screen</a>
+      </div>
+    </div>
+    
+    <div class='col-md-4 mb-3'>
+      <div class='status-card h-100'>
+        <div class='d-flex justify-content-between align-items-center'>
+          <div class='fw-semibold'>SCR-O04: Manage Facility Info</div>
+          <span class='badge bg-secondary'>Wireframe</span>
+        </div>
+        <div class='small text-muted mb-2'>Organizer/Staff</div>
+        <div class='mb-2'>Edit facility hours/notes/closures displayed to students.</div>
+        <div class='mb-2'><span class='badge bg-info text-dark'>UC-O03</span></div>
+        <a class='btn btn-sm btn-outline-primary' href='screens/SCR-O04-manage-facility.html'>Open screen</a>
+      </div>
+    </div>
+    
+    <div class='col-md-4 mb-3'>
+      <div class='status-card h-100'>
+        <div class='d-flex justify-content-between align-items-center'>
+          <div class='fw-semibold'>SCR-O05: Organizer Analytics</div>
+          <span class='badge bg-secondary'>Wireframe</span>
+        </div>
+        <div class='small text-muted mb-2'>Organizer/Staff</div>
+        <div class='mb-2'>View facility trends (busiest times, updates, RSVPs).</div>
+        <div class='mb-2'><span class='badge bg-info text-dark'>UC-O05</span></div>
+        <a class='btn btn-sm btn-outline-primary' href='screens/SCR-O05-organizer-analytics.html'>Open screen</a>
+      </div>
+    </div>
+    
+    </div>
+  </section>
+  <section id='admin' class='mb-5'>
+    <h2 class='h4 mb-3'>Admin Screens</h2>
+    <div class='row'>
+      
+    <div class='col-md-4 mb-3'>
+      <div class='status-card h-100'>
+        <div class='d-flex justify-content-between align-items-center'>
+          <div class='fw-semibold'>SCR-A01: Admin Dashboard</div>
+          <span class='badge bg-primary'>Mockup</span>
+        </div>
+        <div class='small text-muted mb-2'>Admin</div>
+        <div class='mb-2'>Admin home with KPIs and navigation to queues and management pages.</div>
+        <div class='mb-2'><span class='badge bg-info text-dark'>UC-A01, UC-A02, UC-A03, UC-A04</span></div>
+        <a class='btn btn-sm btn-outline-primary' href='screens/SCR-A01-admin-dashboard.html'>Open screen</a>
+      </div>
+    </div>
+    
+    <div class='col-md-4 mb-3'>
+      <div class='status-card h-100'>
+        <div class='d-flex justify-content-between align-items-center'>
+          <div class='fw-semibold'>SCR-A02: Verification Requests Queue</div>
+          <span class='badge bg-primary'>Mockup</span>
+        </div>
+        <div class='small text-muted mb-2'>Admin</div>
+        <div class='mb-2'>Approve/deny organizer verification requests.</div>
+        <div class='mb-2'><span class='badge bg-info text-dark'>UC-A01</span></div>
+        <a class='btn btn-sm btn-outline-primary' href='screens/SCR-A02-verification-queue.html'>Open screen</a>
+      </div>
+    </div>
+    
+    <div class='col-md-4 mb-3'>
+      <div class='status-card h-100'>
+        <div class='d-flex justify-content-between align-items-center'>
+          <div class='fw-semibold'>SCR-A03: Reports & Moderation Queue</div>
+          <span class='badge bg-primary'>Mockup</span>
+        </div>
+        <div class='small text-muted mb-2'>Admin</div>
+        <div class='mb-2'>Review reports and take moderation actions; resolve disputes.</div>
+        <div class='mb-2'><span class='badge bg-info text-dark'>UC-A02, UC-A04</span></div>
+        <a class='btn btn-sm btn-outline-primary' href='screens/SCR-A03-moderation-queue.html'>Open screen</a>
+      </div>
+    </div>
+    
+    <div class='col-md-4 mb-3'>
+      <div class='status-card h-100'>
+        <div class='d-flex justify-content-between align-items-center'>
+          <div class='fw-semibold'>SCR-A04: Manage Locations</div>
+          <span class='badge bg-primary'>Mockup</span>
+        </div>
+        <div class='small text-muted mb-2'>Admin</div>
+        <div class='mb-2'>Create/edit/archive locations and categories.</div>
+        <div class='mb-2'><span class='badge bg-info text-dark'>UC-A03</span></div>
+        <a class='btn btn-sm btn-outline-primary' href='screens/SCR-A04-manage-locations.html'>Open screen</a>
+      </div>
+    </div>
+    
+    </div>
+  </section>
+  <section id='mapping' class='mb-5'>
+    <h2 class='h4 mb-3'>Use Case ↔ Screen Mapping</h2>
+    <div class='table-responsive tab-card'>
+      <table class='table table-sm'>
+        <thead><tr><th>Use Case</th><th>Screens</th></tr></thead>
+        <tbody>
+          <tr><td class='fw-semibold'>UC-S01</td><td>SCR-S01, SCR-S02</td></tr><tr><td class='fw-semibold'>UC-S02</td><td>SCR-S01, SCR-S03</td></tr><tr><td class='fw-semibold'>UC-S03</td><td>SCR-S01, SCR-S04, SCR-S05</td></tr><tr><td class='fw-semibold'>UC-S04</td><td>SCR-S05, SCR-S06</td></tr><tr><td class='fw-semibold'>UC-S05</td><td>SCR-S06, SCR-S07</td></tr><tr><td class='fw-semibold'>UC-S06</td><td>SCR-S06, SCR-S08</td></tr><tr><td class='fw-semibold'>UC-S07</td><td>SCR-S04, SCR-S09</td></tr><tr><td class='fw-semibold'>UC-S08</td><td>SCR-S10</td></tr><tr><td class='fw-semibold'>UC-S09</td><td>SCR-S04, SCR-S11</td></tr><tr><td class='fw-semibold'>UC-S10</td><td>SCR-S04, SCR-S12</td></tr><tr><td class='fw-semibold'>UC-S11</td><td>SCR-S10, SCR-S13</td></tr><tr><td class='fw-semibold'>UC-S12</td><td>SCR-S06, SCR-S10, SCR-S14</td></tr><tr><td class='fw-semibold'>UC-O01</td><td>SCR-O01</td></tr><tr><td class='fw-semibold'>UC-O02</td><td>SCR-O02, SCR-O03</td></tr><tr><td class='fw-semibold'>UC-O03</td><td>SCR-O02, SCR-O04</td></tr><tr><td class='fw-semibold'>UC-O04</td><td>SCR-O02</td></tr><tr><td class='fw-semibold'>UC-O05</td><td>SCR-O02, SCR-O05</td></tr><tr><td class='fw-semibold'>UC-O06</td><td>SCR-O02</td></tr><tr><td class='fw-semibold'>UC-A01</td><td>SCR-A01, SCR-A02</td></tr><tr><td class='fw-semibold'>UC-A02</td><td>SCR-A01, SCR-A03</td></tr><tr><td class='fw-semibold'>UC-A03</td><td>SCR-A01, SCR-A04</td></tr><tr><td class='fw-semibold'>UC-A04</td><td>SCR-A01, SCR-A03</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+<footer class='footer text-center'>Campus Activity Hub — Mid Deliverable</footer>
+<script src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js'></script>
+</body>
+</html>
