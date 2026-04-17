@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Friends — Campus Activity Hub</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/css/styles.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<%- include('../partials/student-nav', { page: 'friends' }) %>
+
+<main class="container my-4" style="max-width: 640px;">
+  <h1 class="h4 fw-semibold mb-1">Friends</h1>
+  <p class="text-muted mb-4">Add friends to see their activities in your home feed.</p>
+
+  <%# Success / error banners from redirects with query params %>
+  <% if (success) { %><div class="alert alert-success py-2"><%= success %></div><% } %>
+  <% if (error) { %><div class="alert alert-danger py-2"><%= error %></div><% } %>
+
+  <%# Add a friend by email %>
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h6 class="fw-semibold mb-3">Add a friend</h6>
+      <form method="POST" action="/student/friends/request" class="d-flex gap-2">
+        <input name="email" type="email" class="form-control"
+               placeholder="Their campus email address" required>
+        <button type="submit" class="btn btn-primary text-nowrap">Send Request</button>
+      </form>
+    </div>
+  </div>
+
+  <%# Pending requests I received — I need to accept or ignore these %>
+  <% if (pendingReceived.length > 0) { %>
+    <h6 class="fw-semibold mb-2">Friend Requests (<%= pendingReceived.length %>)</h6>
+    <div class="list-group shadow-sm mb-4">
+      <% pendingReceived.forEach(req => { %>
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <div class="fw-semibold"><%= req.requester.name %></div>
+            <div class="text-muted small"><%= req.requester.email %></div>
+          </div>
+          <%# POST to accept — the friendship id is in the URL param %>
+          <form method="POST" action="/student/friends/<%= req.id %>/accept">
+            <button type="submit" class="btn btn-sm btn-success">Accept</button>
+          </form>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <%# My current friend list %>
+  <h6 class="fw-semibold mb-2">My Friends (<%= friends.length %>)</h6>
+
+  <% if (friends.length === 0) { %>
+    <div class="card shadow-sm mb-4">
+      <div class="card-body text-center text-muted py-4">
+        No friends yet. Add someone above to get started.
+      </div>
+    </div>
+  <% } else { %>
+    <div class="list-group shadow-sm mb-4">
+      <% friends.forEach(f => { %>
+        <div class="list-group-item">
+          <div class="fw-semibold"><%= f.user.name %></div>
+          <div class="text-muted small"><%= f.user.email %></div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <%# Requests I sent that are still pending %>
+  <% if (pendingSent.length > 0) { %>
+    <h6 class="fw-semibold mb-2">Sent Requests</h6>
+    <div class="list-group shadow-sm">
+      <% pendingSent.forEach(req => { %>
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <div class="fw-semibold"><%= req.recipient.name %></div>
+            <div class="text-muted small"><%= req.recipient.email %></div>
+          </div>
+          <span class="badge bg-light text-dark border">Pending</span>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

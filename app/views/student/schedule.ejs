@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Schedule — Campus Activity Hub</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/css/styles.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<%- include('../partials/student-nav', { page: 'schedule' }) %>
+
+<main class="container my-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="h4 fw-semibold mb-1">My Schedule</h1>
+      <p class="text-muted mb-0">Activities you've joined or created.</p>
+    </div>
+    <a href="/student/activities/new" class="btn btn-primary btn-sm">+ Create Activity</a>
+  </div>
+
+  <%# ── Upcoming ── %>
+  <h6 class="fw-semibold text-uppercase text-muted small mb-2 mt-3">Upcoming</h6>
+
+  <% if (upcoming.length === 0 && created.length === 0) { %>
+    <div class="card shadow-sm mb-4">
+      <div class="card-body text-center text-muted py-4">
+        Nothing coming up. <a href="/student/activities/new">Create an activity</a> or RSVP to one from the home feed.
+      </div>
+    </div>
+  <% } else { %>
+    <div class="row g-3 mb-4">
+
+      <%# Activities the user RSVP'd to (but didn't create) %>
+      <% upcoming.forEach(p => { const a = p.Activity; %>
+        <div class="col-12 col-md-6">
+          <a href="/student/activities/<%= a.id %>" class="text-decoration-none">
+            <div class="card shadow-sm h-100">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-1">
+                  <span class="fw-semibold text-dark"><%= a.title %></span>
+                  <span class="badge bg-light text-dark border text-capitalize"><%= a.type %></span>
+                </div>
+                <div class="text-muted small mb-1">
+                  <%# toLocaleDateString + toLocaleTimeString format the JS Date into readable strings %>
+                  <%= new Date(a.scheduledAt).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' }) %>
+                  at <%= new Date(a.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %>
+                  <% if (a.Location) { %> &middot; <%= a.Location.name %><% } %>
+                </div>
+                <div class="text-muted small">By <%= a.creator.name %></div>
+              </div>
+              <div class="card-footer bg-transparent border-top-0 pt-0 pb-2 px-3">
+                <% if (p.status === 'checked_in') { %>
+                  <span class="badge bg-success">Checked In</span>
+                <% } else { %>
+                  <span class="badge bg-light text-dark border">RSVP'd</span>
+                <% } %>
+              </div>
+            </div>
+          </a>
+        </div>
+      <% }) %>
+
+      <%# Activities the user created (upcoming) %>
+      <% created.forEach(a => { %>
+        <%# Skip if already shown in the RSVP list above to avoid duplicates %>
+        <% const alreadyShown = upcoming.some(p => p.Activity.id === a.id); %>
+        <% if (!alreadyShown) { %>
+          <div class="col-12 col-md-6">
+            <a href="/student/activities/<%= a.id %>" class="text-decoration-none">
+              <div class="card shadow-sm h-100">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-start mb-1">
+                    <span class="fw-semibold text-dark"><%= a.title %></span>
+                    <span class="badge bg-light text-dark border text-capitalize"><%= a.type %></span>
+                  </div>
+                  <div class="text-muted small mb-1">
+                    <%= new Date(a.scheduledAt).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' }) %>
+                    at <%= new Date(a.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %>
+                    <% if (a.Location) { %> &middot; <%= a.Location.name %><% } %>
+                  </div>
+                  <div class="text-muted small"><%= a.Participants.length %> going</div>
+                </div>
+                <div class="card-footer bg-transparent border-top-0 pt-0 pb-2 px-3">
+                  <span class="badge bg-primary">You created this</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        <% } %>
+      <% }) %>
+
+    </div>
+  <% } %>
+
+  <%# ── Past ── %>
+  <% if (past.length > 0) { %>
+    <h6 class="fw-semibold text-uppercase text-muted small mb-2">Past</h6>
+    <div class="row g-3">
+      <% past.forEach(p => { const a = p.Activity; %>
+        <div class="col-12 col-md-6">
+          <a href="/student/activities/<%= a.id %>" class="text-decoration-none">
+            <div class="card shadow-sm h-100 opacity-75">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-1">
+                  <span class="fw-semibold text-dark"><%= a.title %></span>
+                  <span class="badge bg-light text-dark border text-capitalize"><%= a.type %></span>
+                </div>
+                <div class="text-muted small">
+                  <%= new Date(a.scheduledAt).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' }) %>
+                  <% if (a.Location) { %> &middot; <%= a.Location.name %><% } %>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

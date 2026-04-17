@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign Up — Campus Activity Hub</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg bg-white border-bottom">
+  <div class="container">
+    <a class="navbar-brand fw-semibold" href="/">Campus Activity Hub</a>
+    <div class="ms-auto d-flex gap-2">
+      <a class="btn btn-outline-primary btn-sm" href="/login">Login</a>
+      <a class="btn btn-primary btn-sm" href="/signup">Sign Up</a>
+    </div>
+  </div>
+</nav>
+
+<main class="container my-5" style="max-width: 480px;">
+  <h1 class="h4 fw-semibold mb-1">Create an account</h1>
+  <p class="text-muted mb-4">Join Campus Activity Hub to see and plan activities.</p>
+
+  <%# Show validation errors from the controller %>
+  <% if (error) { %>
+    <div class="alert alert-danger py-2"><%= error %></div>
+  <% } %>
+
+  <form method="POST" action="/signup">
+    <div class="mb-3">
+      <label class="form-label" for="name">Full name</label>
+      <input id="name" name="name" type="text" class="form-control" placeholder="Your name" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="email">Email address</label>
+      <input id="email" name="email" type="email" class="form-control" placeholder="you@wsu.edu" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="password">Password</label>
+      <input id="password" name="password" type="password" class="form-control"
+             placeholder="At least 6 characters" required minlength="6">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="confirmPassword">Confirm password</label>
+      <input id="confirmPassword" name="confirmPassword" type="password" class="form-control"
+             placeholder="Repeat password" required>
+    </div>
+
+    <%# Role selector — students are the default; organizers register here then wait for admin approval %>
+    <div class="mb-4">
+      <label class="form-label" for="role">I am a...</label>
+      <select id="role" name="role" class="form-select">
+        <option value="student" selected>Student</option>
+        <option value="organizer">Organizer / Staff</option>
+      </select>
+      <div class="form-text">
+        Organizer accounts require admin approval before you can post verified updates.
+      </div>
+    </div>
+
+    <button class="btn btn-primary w-100" type="submit">Create Account</button>
+  </form>
+
+  <p class="text-center text-muted mt-3 mb-0">
+    Already have an account? <a href="/login">Log in</a>
+  </p>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

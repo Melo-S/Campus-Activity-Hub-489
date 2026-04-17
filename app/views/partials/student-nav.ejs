@@ -1,0 +1,30 @@
+<nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-semibold" href="/student/home">Campus Activity Hub</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#studentNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="studentNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link <%= page === 'home' ? 'active fw-semibold' : '' %>" href="/student/home">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link <%= page === 'facilities' ? 'active fw-semibold' : '' %>" href="/student/facilities">Facilities</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link <%= page === 'friends' ? 'active fw-semibold' : '' %>" href="/student/friends">Friends</a>
+        </li>
+      </ul>
+      <div class="d-flex gap-2 align-items-center">
+        <a href="/student/activities/new" class="btn btn-primary btn-sm">+ Create Activity</a>
+        <span class="text-muted small d-none d-lg-inline">
+          <%= currentUser?.name %> &middot; <span class="text-capitalize"><%= currentUser?.role %></span>
+        </span>
+        <form method="POST" action="/logout" class="m-0">
+          <button class="btn btn-outline-secondary btn-sm" type="submit">Logout</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</nav>

@@ -3,6 +3,9 @@ const express = require("express");
 const session = require("express-session");
 require("dotenv").config();
 
+// Import the sequelize instance so we can sync (create) the DB tables on startup
+const { sequelize } = require("./models");
+
 const authRoutes = require("./routes/authRoutes");
 const studentRoutes = require("./routes/studentRoutes");
 
@@ -39,4 +42,9 @@ app.get("/admin/dashboard", (req, res) => res.send("Admin dashboard placeholder"
 app.get("/organizer/dashboard", (req, res) => res.send("Organizer dashboard placeholder"));
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running: http://localhost:${PORT}`));
+
+// sequelize.sync() checks the DB and creates any tables that don't exist yet
+// { alter: false } means it won't try to modify existing columns (safe for dev)
+sequelize.sync().then(() => {
+  app.listen(PORT, () => console.log(`Server running: http://localhost:${PORT}`));
+});
