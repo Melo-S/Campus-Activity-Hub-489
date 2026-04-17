@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Home Feed — Campus Activity Hub</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg bg-white border-bottom">
+  <div class="container">
+    <a class="navbar-brand" href="/">Campus Activity Hub</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample"
+      aria-controls="navbarsExample" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarsExample">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="/student/home">Home</a></li>
+
+        <!--placeholders for teammates-->
+        <li class="nav-item"><a class="nav-link" href="/student/facilities">Facilities</a></li>
+        <li class="nav-item"><a class="nav-link" href="/student/activities/new">Create Activity</a></li>
+        <li class="nav-item"><a class="nav-link" href="/student/friends">Friends</a></li>
+      </ul>
+
+      <div class="d-flex gap-2 align-items-center">
+        <span class="text-muted small">
+          Logged in as <b><%= currentUser?.name || "Student" %></b> (<%= currentUser?.role || "student" %>)
+        </span>
+
+        <form method="POST" action="/logout" class="m-0">
+          <button class="btn btn-outline-secondary btn-sm" type="submit">Logout</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class="container my-4">
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+    <div>
+      <div class="pill mb-2">Student</div>
+      <h1 class="h3 mb-1">Home Feed (Now / Today / Friends)</h1>
+      <div class="text-muted">Primary hub with tabs for live statuses, today activities, and friends feed.</div>
+    </div>
+    <div class="text-end">
+      <span class="badge bg-primary">Live</span>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <div class="fw-semibold mb-1">Use cases covered</div>
+    <div class="d-flex flex-wrap gap-1">
+      <span class="badge bg-info text-dark me-1 mb-1">UC-S03</span>
+      <span class="badge bg-info text-dark me-1 mb-1">UC-S07</span>
+      <span class="badge bg-info text-dark me-1 mb-1">UC-S09</span>
+      <span class="badge bg-info text-dark me-1 mb-1">UC-S10</span>
+    </div>
+  </div>
+
+  <div class="tab-card">
+    <ul class="nav nav-tabs mb-3" role="tablist">
+      <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tab0">Happening Now</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab1">Today</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab2">Friends</a></li>
+    </ul>
+
+    <div class="tab-content">
+      <!-- Happening Now -->
+      <div class="tab-pane fade show active" id="tab0">
+        <div class="row g-3">
+          <% facilities.forEach(f => { %>
+            <div class="col-12 col-md-4">
+              <div class="card shadow-sm">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div class="fw-semibold"><%= f.name %></div>
+                    <span class="badge text-bg-light border"><%= f.badge %></span>
+                  </div>
+                  <div class="h4 mb-0 mt-2"><%= f.status %></div>
+                  <div class="text-muted small">Updated <%= f.updated %></div>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+
+      <!-- Today -->
+      <div class="tab-pane fade" id="tab1">
+        <div class="wireframe-placeholder">
+          Content for Today (placeholder for now)
+        </div>
+      </div>
+
+      <!-- Friends -->
+      <div class="tab-pane fade" id="tab2">
+        <div class="wireframe-placeholder">
+          Content for Friends (placeholder for now)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-3 mt-4">
+    <div class="fw-semibold mb-1">Primary UI Components</div>
+    <div class="d-flex flex-wrap gap-1">
+      <span class="badge badge-soft me-1 mb-1">Top nav</span>
+      <span class="badge badge-soft me-1 mb-1">Tabs + filters/sort</span>
+      <span class="badge badge-soft me-1 mb-1">Refresh button</span>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <div class="fw-semibold mb-1">Primary Actions</div>
+    <div class="d-flex flex-wrap gap-1">
+      <span class="badge badge-soft me-1 mb-1">Open facility</span>
+      <span class="badge badge-soft me-1 mb-1">Open activity</span>
+      <span class="badge badge-soft me-1 mb-1">Create activity</span>
+      <span class="badge badge-soft me-1 mb-1">Switch tabs</span>
+    </div>
+  </div>
+
+  <footer class="footer text-center">Campus Activity Hub — Project Build</footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
