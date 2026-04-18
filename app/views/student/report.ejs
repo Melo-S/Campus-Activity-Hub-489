@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Report Content — Campus Activity Hub</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/css/styles.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<%- include('../partials/student-nav', { page: 'none' }) %>
+
+<main class="container my-5" style="max-width: 520px;">
+
+  <% if (success) { %>
+    <%# Show confirmation after the report is submitted — no redirect so user sees it clearly %>
+    <div class="card shadow-sm text-center p-5">
+      <div class="mb-3" style="font-size: 2rem;">&#10003;</div>
+      <h2 class="h5 fw-semibold mb-2">Report submitted</h2>
+      <p class="text-muted mb-4">Thanks for letting us know. An admin will review it shortly.</p>
+      <a href="/student/home" class="btn btn-primary">Back to Home</a>
+    </div>
+
+  <% } else { %>
+    <a href="javascript:history.back()" class="text-muted small text-decoration-none d-inline-block mb-3">&larr; Back</a>
+
+    <h1 class="h4 fw-semibold mb-1">Report content</h1>
+    <p class="text-muted mb-4">
+      Let an admin know about
+      <% if (contentType === 'activity') { %>an activity<% } else { %>a status update<% } %>
+      that violates community guidelines.
+    </p>
+
+    <% if (error) { %>
+      <div class="alert alert-danger py-2"><%= error %></div>
+    <% } %>
+
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <form method="POST" action="/student/report">
+          <%# Pass contentType and contentId as hidden fields so the controller knows what's being reported %>
+          <input type="hidden" name="contentType" value="<%= contentType %>">
+          <input type="hidden" name="contentId" value="<%= contentId %>">
+
+          <div class="mb-4">
+            <label class="form-label fw-semibold" for="reason">What's the issue?</label>
+            <textarea id="reason" name="reason" class="form-control" rows="4" required
+              placeholder="Describe why this content should be reviewed (e.g. spam, inappropriate language, misleading information)..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-danger w-100">Submit Report</button>
+        </form>
+      </div>
+    </div>
+  <% } %>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

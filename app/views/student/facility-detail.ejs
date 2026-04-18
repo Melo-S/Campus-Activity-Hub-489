@@ -109,8 +109,8 @@
               </span>
             </div>
 
-            <%# Right: confirm / disagree vote buttons %>
-            <div class="d-flex gap-2">
+            <%# Right: confirm / disagree vote buttons + report %>
+            <div class="d-flex gap-2 align-items-center">
               <form method="POST"
                     action="/student/facilities/<%= location.id %>/updates/<%= u.id %>/vote">
                 <input type="hidden" name="type" value="confirm">
@@ -125,6 +125,8 @@
                   Disagree (<%= u.disagrees %>)
                 </button>
               </form>
+              <a href="/student/report?contentType=statusUpdate&contentId=<%= u.id %>"
+                 class="btn btn-sm btn-outline-secondary">Report</a>
             </div>
 
           </div>

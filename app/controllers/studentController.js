@@ -353,9 +353,15 @@ exports.renderActivityDetail = async (req, res) => {
   const myId = req.session.user.id;
   const myParticipant = activity.Participants.find(p => p.userId === myId) || null;
 
+  // Build the full invite URL here so the view doesn't need access to req
+  const inviteUrl = activity.inviteCode
+    ? `${req.protocol}://${req.get("host")}/join/${activity.inviteCode}`
+    : null;
+
   res.render("student/activity-detail", {
     activity,
     myParticipant,
+    inviteUrl,
     rsvpCount: activity.Participants.length,
     error: req.query.error || null,
   });

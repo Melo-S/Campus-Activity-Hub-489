@@ -23,8 +23,12 @@
     <div class="card-body">
       <div class="d-flex justify-content-between align-items-start mb-2">
         <span class="badge bg-light text-dark border text-capitalize"><%= activity.type %></span>
-        <% if (activity.inviteCode) { %>
-          <span class="text-muted small">Code: <code><%= activity.inviteCode %></code></span>
+        <% if (inviteUrl) { %>
+          <%# Shareable link — anyone with this URL can join directly %>
+          <div class="text-end">
+            <div class="text-muted small mb-1">Invite link:</div>
+            <code class="small user-select-all"><%= inviteUrl %></code>
+          </div>
         <% } %>
       </div>
 
@@ -52,7 +56,7 @@
     </div>
 
     <%# RSVP / Check-in action area %>
-    <div class="card-footer bg-transparent d-flex gap-2">
+    <div class="card-footer bg-transparent d-flex justify-content-between align-items-center gap-2">
       <% if (!myParticipant) { %>
         <%# Not joined yet — show the RSVP button %>
         <form method="POST" action="/student/activities/<%= activity.id %>/rsvp">
@@ -67,6 +71,12 @@
       <% } else { %>
         <%# Already checked in %>
         <span class="btn btn-success disabled">Checked In</span>
+      <% } %>
+
+      <%# Report link — only show if this user didn't create the activity %>
+      <% if (activity.creatorId !== currentUser.id) { %>
+        <a href="/student/report?contentType=activity&contentId=<%= activity.id %>"
+           class="btn btn-sm btn-outline-secondary ms-auto">Report</a>
       <% } %>
     </div>
   </div>
