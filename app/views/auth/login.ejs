@@ -19,15 +19,14 @@
   </div>
 </nav>
 
-<main class="container my-5" style="max-width: 480px;">
-  <h1 class="h4 fw-semibold mb-1">Welcome back</h1>
-  <p class="text-muted mb-4">Log in to see what's happening on campus.</p>
+<main class="container my-5" style="max-width: 420px;">
+  <h1 class="h5 fw-semibold mb-4">Log in</h1>
 
-  <%# Show the error banner only if the controller passed an error message %>
   <% if (error) { %>
     <div class="alert alert-danger py-2"><%= error %></div>
   <% } %>
 
+  <div class="auth-card card p-4">
   <form method="POST" action="/login">
     <div class="mb-3">
       <label class="form-label" for="email">Email address</label>
@@ -41,8 +40,9 @@
 
     <button class="btn btn-primary w-100" type="submit">Log In</button>
   </form>
+  </div>
 
-  <p class="text-center text-muted mt-3 mb-0">
+  <p class="text-center text-muted small mt-3 mb-0">
     Don't have an account? <a href="/signup">Sign up</a>
   </p>
 </main>
