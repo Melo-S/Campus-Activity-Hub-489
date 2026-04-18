@@ -11,90 +11,94 @@
 
 <%- include('../partials/student-nav', { page: 'none' }) %>
 
-<main class="container my-4" style="max-width: 640px;">
-  <a href="/student/home" class="text-muted small text-decoration-none d-inline-block mb-3">&larr; Back to Home</a>
+<main class="container my-4" style="max-width:620px;">
+
+  <a href="/student/home" class="back-link">&larr; Home</a>
 
   <% if (error === 'full') { %>
-    <div class="alert alert-warning py-2">This activity is full and can't accept more RSVPs.</div>
+    <div class="alert alert-warning py-2 mb-3" style="font-size:0.875rem;">This activity is full.</div>
   <% } %>
 
-  <%# Activity header card %>
-  <div class="card shadow-sm mb-4">
+  <%# Main activity card %>
+  <div class="card mb-4">
     <div class="card-body">
-      <div class="d-flex justify-content-between align-items-start mb-2">
-        <span class="badge bg-light text-dark border text-capitalize"><%= activity.type %></span>
+      <%
+        const detIconMap = { study:'bi-journal-text', workout:'bi-lightning-charge', dinner:'bi-cup-hot', other:'bi-three-dots' };
+      %>
+      <div class="d-flex justify-content-between align-items-start mb-3">
+        <span class="activity-chip"><i class="bi <%= detIconMap[activity.type] || 'bi-three-dots' %>"></i> <%= activity.type %></span>
         <% if (inviteUrl) { %>
-          <%# Shareable link — anyone with this URL can join directly %>
-          <div class="text-end">
-            <div class="text-muted small mb-1">Invite link:</div>
-            <code class="small user-select-all"><%= inviteUrl %></code>
+          <div class="text-end" style="max-width:200px;">
+            <div style="font-size:0.72rem;color:#888;margin-bottom:3px;">Invite link</div>
+            <code class="user-select-all" style="font-size:0.75rem;word-break:break-all;"><%= inviteUrl %></code>
           </div>
         <% } %>
       </div>
 
-      <h2 class="h4 fw-semibold mb-1"><%= activity.title %></h2>
+      <h2 class="fw-semibold mb-1" style="font-size:1.2rem;"><%= activity.title %></h2>
 
-      <div class="text-muted small mb-3">
-        <%# Format the stored Date into a readable date + time string %>
-        <%= new Date(activity.scheduledAt).toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' }) %>
-        at <%= new Date(activity.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %>
-        <% if (activity.Location) { %> &middot; <%= activity.Location.name %><% } %>
+      <div class="mb-3" style="font-size:0.82rem;color:#666;">
+        <%= new Date(activity.scheduledAt).toLocaleDateString([], { weekday:'long', month:'short', day:'numeric' }) %>
+        at <%= new Date(activity.scheduledAt).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }) %>
+        <% if (activity.Location) { %>&nbsp;· <%= activity.Location.name %><% } %>
       </div>
 
       <% if (activity.description) { %>
-        <p class="mb-3"><%= activity.description %></p>
+        <p class="mb-3" style="font-size:0.9rem;color:#333;"><%= activity.description %></p>
       <% } %>
 
-      <div class="text-muted small">
-        Created by <strong><%= activity.creator.name %></strong> &middot;
-        <% if (activity.maxParticipants) { %>
-          <%= rsvpCount %> / <%= activity.maxParticipants %> going
-        <% } else { %>
-          <%= rsvpCount %> going
-        <% } %>
+      <div class="d-flex align-items-center gap-2">
+        <span class="avatar avatar-sm"><%= activity.creator.name.charAt(0) %></span>
+        <span style="font-size:0.8rem;color:#666;">
+          <%= activity.creator.name %> &middot;
+          <% if (activity.maxParticipants) { %>
+            <%= rsvpCount %>/<%= activity.maxParticipants %> going
+          <% } else { %>
+            <%= rsvpCount %> going
+          <% } %>
+        </span>
       </div>
     </div>
 
-    <%# RSVP / Check-in action area %>
-    <div class="card-footer bg-transparent d-flex justify-content-between align-items-center gap-2">
+    <div class="card-footer d-flex align-items-center gap-2">
       <% if (!myParticipant) { %>
-        <%# Not joined yet — show the RSVP button %>
         <form method="POST" action="/student/activities/<%= activity.id %>/rsvp">
-          <button type="submit" class="btn btn-primary">RSVP</button>
+          <button type="submit" class="btn btn-primary btn-sm">RSVP</button>
         </form>
       <% } else if (myParticipant.status === 'rsvp') { %>
-        <%# Already RSVP'd — offer check-in %>
-        <span class="btn btn-success disabled">RSVP'd</span>
+        <span class="badge" style="background:#dcfce7;color:#166534;font-size:0.78rem;padding:5px 10px;">RSVP'd</span>
         <form method="POST" action="/student/activities/<%= activity.id %>/checkin">
-          <button type="submit" class="btn btn-outline-success">Check In</button>
+          <button type="submit" class="btn btn-sm btn-outline-success">Check In</button>
         </form>
       <% } else { %>
-        <%# Already checked in %>
-        <span class="btn btn-success disabled">Checked In</span>
+        <span class="badge" style="background:#dcfce7;color:#166534;font-size:0.78rem;padding:5px 10px;">Checked In</span>
       <% } %>
-
-      <%# Report link — only show if this user didn't create the activity %>
       <% if (activity.creatorId !== currentUser.id) { %>
         <a href="/student/report?contentType=activity&contentId=<%= activity.id %>"
-           class="btn btn-sm btn-outline-secondary ms-auto">Report</a>
+           class="ms-auto text-muted" style="font-size:0.78rem;">Report</a>
       <% } %>
     </div>
   </div>
 
   <%# Participant list %>
-  <h6 class="fw-semibold mb-3">Who's going (<%= rsvpCount %>)</h6>
+  <div class="section-label mb-2">Who's going (<%= rsvpCount %>)</div>
 
   <% if (activity.Participants.length === 0) { %>
-    <p class="text-muted">No one has RSVP'd yet.</p>
+    <div class="card"><div class="empty-state">No one has RSVP'd yet.</div></div>
   <% } else { %>
-    <div class="list-group shadow-sm">
-      <% activity.Participants.forEach(p => { %>
-        <div class="list-group-item d-flex justify-content-between align-items-center">
-          <span><%= p.User.name %></span>
+    <div class="card">
+      <% activity.Participants.forEach((p, i) => { %>
+        <div class="d-flex align-items-center justify-content-between px-3 py-2
+          <%= i < activity.Participants.length - 1 ? 'border-bottom' : '' %>"
+          style="border-color:#f0f0f0;">
+          <div class="d-flex align-items-center gap-2">
+            <span class="avatar avatar-sm"><%= p.User.name.charAt(0) %></span>
+            <span style="font-size:0.88rem;"><%= p.User.name %></span>
+          </div>
           <% if (p.status === 'checked_in') { %>
-            <span class="badge bg-success">Checked In</span>
+            <span style="font-size:0.75rem;color:#16a34a;font-weight:600;">Checked in</span>
           <% } else { %>
-            <span class="badge bg-light text-dark border">RSVP'd</span>
+            <span style="font-size:0.75rem;color:#888;">RSVP'd</span>
           <% } %>
         </div>
       <% }) %>

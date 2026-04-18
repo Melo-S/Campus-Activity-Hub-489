@@ -11,52 +11,138 @@
 
 <nav class="navbar navbar-dark">
   <div class="container">
-    <a class="navbar-brand" href="/">Campus Activity Hub</a>
+    <a class="navbar-brand fw-semibold d-flex align-items-center gap-2" href="/">
+      <svg width="20" height="25" viewBox="0 0 20 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 1C5.03 1 1 5.03 1 10c0 6.75 9 14 9 14s9-7.25 9-14c0-4.97-4.03-9-9-9z" fill="white"/>
+        <circle cx="10" cy="10" r="3.5" fill="#981e32"/>
+      </svg>
+      Campus Activity Hub
+    </a>
     <div class="d-flex gap-2">
-      <a class="btn btn-outline-primary btn-sm" href="/login">Login</a>
-      <a class="btn btn-primary btn-sm" href="/signup">Sign Up</a>
+      <a class="btn btn-outline-light btn-sm" href="/login">Login</a>
+      <a class="btn btn-sm text-white btn-primary" href="/signup">Sign Up</a>
     </div>
   </div>
 </nav>
 
 <div class="container py-5">
-  <div class="row g-5 align-items-start">
+  <div class="row g-5 align-items-center">
 
-    <div class="col-12 col-md-6">
-      <h1 class="fw-bold mb-3">Campus Activity Hub</h1>
-      <p class="text-muted mb-4">
-        A web app for WSU students to check how busy campus spots are (Library, UREC, Dining)
-        and coordinate activities with friends — study sessions, gym, dinner, etc.
-      </p>
-      <p class="text-muted small mb-4">
-        Busyness data comes from students posting crowd reports and organizers posting verified updates.
-        Reports expire after 30 minutes so the info stays current.
+    <%# Left: hero text %>
+    <div class="col-12 col-md-5">
+      <div class="mb-2" style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#981e32;">WSU Pullman</div>
+      <h1 class="fw-bold mb-3" style="font-size:2rem;line-height:1.2;">
+        Know what's happening<br>on campus.
+      </h1>
+      <p class="mb-4" style="color:#555;line-height:1.7;font-size:0.95rem;">
+        Live crowd reports for the Library, UREC, and dining halls.
+        Plan study sessions and workouts with friends.
       </p>
       <div class="d-flex gap-2">
-        <a href="/signup" class="btn btn-primary">Create an account</a>
+        <a href="/signup" class="btn btn-primary px-4">Get started</a>
         <a href="/login" class="btn btn-outline-secondary">Log in</a>
+      </div>
+
+      <div class="d-flex gap-4 mt-4 pt-3" style="border-top:1px solid #e8e8e8;">
+        <div>
+          <div class="fw-bold" style="font-size:1.3rem;color:#981e32;">15+</div>
+          <div style="font-size:0.78rem;color:#888;">Campus spots</div>
+        </div>
+        <div>
+          <div class="fw-bold" style="font-size:1.3rem;color:#981e32;">Live</div>
+          <div style="font-size:0.78rem;color:#888;">Crowd updates</div>
+        </div>
+        <div>
+          <div class="fw-bold" style="font-size:1.3rem;color:#981e32;">3</div>
+          <div style="font-size:0.78rem;color:#888;">Roles</div>
+        </div>
       </div>
     </div>
 
-    <div class="col-12 col-md-5 offset-md-1">
-      <div class="card border">
-        <div class="card-header bg-white fw-semibold">What you can do</div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item text-muted small">Check live busyness — Library, UREC, Southside Café</li>
-          <li class="list-group-item text-muted small">Post a crowd report or confirm someone else's</li>
-          <li class="list-group-item text-muted small">Create a study session, workout, or dinner plan</li>
-          <li class="list-group-item text-muted small">Invite friends with a shareable link, track RSVPs</li>
-          <li class="list-group-item text-muted small">Check in when you arrive</li>
-        </ul>
+    <%# Right: visual app preview %>
+    <div class="col-12 col-md-7">
+      <div style="background:#1a1a1a;border-radius:14px;padding:12px 14px 6px;margin-bottom:16px;">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div style="width:10px;height:10px;border-radius:50%;background:#ff5f57;"></div>
+          <div style="width:10px;height:10px;border-radius:50%;background:#febc2e;"></div>
+          <div style="width:10px;height:10px;border-radius:50%;background:#28c840;"></div>
+          <span style="font-size:0.72rem;color:#666;margin-left:4px;">Campus Activity Hub</span>
+        </div>
+        <div style="background:#f0f0f0;border-radius:10px;padding:14px 14px 10px;">
+          <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#888;margin-bottom:10px;">Happening Now</div>
+          <div class="preview-card" style="border-left:4px solid #dc2626;">
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center gap-2">
+                <div style="width:32px;height:32px;border-radius:8px;background:#fff0f3;display:flex;align-items:center;justify-content:center;font-size:0.95rem;">⚡</div>
+                <div>
+                  <div style="font-size:0.85rem;font-weight:600;color:#1a1a1a;">UREC</div>
+                  <div style="font-size:0.72rem;color:#888;">Recreation</div>
+                </div>
+              </div>
+              <div class="d-flex align-items-center gap-1">
+                <div class="preview-dot" style="background:#dc2626;"></div>
+                <span style="font-size:0.82rem;font-weight:600;color:#dc2626;">Busy</span>
+              </div>
+            </div>
+            <div class="busyness-bar"><div class="busyness-bar-fill busy"></div></div>
+          </div>
+          <div class="preview-card" style="border-left:4px solid #d97706;">
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center gap-2">
+                <div style="width:32px;height:32px;border-radius:8px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:0.95rem;">📚</div>
+                <div>
+                  <div style="font-size:0.85rem;font-weight:600;color:#1a1a1a;">Terrell Library</div>
+                  <div style="font-size:0.72rem;color:#888;">Library</div>
+                </div>
+              </div>
+              <div class="d-flex align-items-center gap-1">
+                <div class="preview-dot" style="background:#d97706;"></div>
+                <span style="font-size:0.82rem;font-weight:600;color:#d97706;">Moderate</span>
+              </div>
+            </div>
+            <div class="busyness-bar"><div class="busyness-bar-fill moderate"></div></div>
+          </div>
+          <div class="preview-card" style="border-left:4px solid #16a34a;">
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center gap-2">
+                <div style="width:32px;height:32px;border-radius:8px;background:#fff7ed;display:flex;align-items:center;justify-content:center;font-size:0.95rem;">🍽️</div>
+                <div>
+                  <div style="font-size:0.85rem;font-weight:600;color:#1a1a1a;">Southside Café</div>
+                  <div style="font-size:0.72rem;color:#888;">Dining</div>
+                </div>
+              </div>
+              <div class="d-flex align-items-center gap-1">
+                <div class="preview-dot" style="background:#16a34a;"></div>
+                <span style="font-size:0.82rem;font-weight:600;color:#16a34a;">Light</span>
+              </div>
+            </div>
+            <div class="busyness-bar"><div class="busyness-bar-fill light"></div></div>
+          </div>
+        </div>
       </div>
 
-      <div class="card border mt-3">
-        <div class="card-header bg-white fw-semibold">User roles</div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item text-muted small"><strong class="text-dark">Student</strong> — browse, post reports, create/join activities, add friends</li>
-          <li class="list-group-item text-muted small"><strong class="text-dark">Organizer</strong> — post verified facility updates and official events</li>
-          <li class="list-group-item text-muted small"><strong class="text-dark">Admin</strong> — verify organizers, manage locations, review reports</li>
-        </ul>
+      <div class="row g-2">
+        <div class="col-4">
+          <div style="background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:12px;text-align:center;">
+            <div style="font-size:1.4rem;margin-bottom:4px;">📍</div>
+            <div style="font-size:0.72rem;font-weight:600;color:#333;">Campus Map</div>
+            <div style="font-size:0.68rem;color:#888;margin-top:2px;">Live hotspots</div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div style="background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:12px;text-align:center;">
+            <div style="font-size:1.4rem;margin-bottom:4px;">🗓️</div>
+            <div style="font-size:0.72rem;font-weight:600;color:#333;">Activities</div>
+            <div style="font-size:0.68rem;color:#888;margin-top:2px;">Study & socials</div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div style="background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:12px;text-align:center;">
+            <div style="font-size:1.4rem;margin-bottom:4px;">👥</div>
+            <div style="font-size:0.72rem;font-weight:600;color:#333;">Friends</div>
+            <div style="font-size:0.68rem;color:#888;margin-top:2px;">See what's up</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -64,7 +150,7 @@
 </div>
 
 <footer class="border-top py-3 mt-4">
-  <div class="container text-muted small">
+  <div class="container" style="font-size:0.82rem;color:#999;">
     CPT_S 489 &mdash; Kaleb Kebede, Melvin Sanare, Modeste Houenou &mdash; WSU Pullman
   </div>
 </footer>

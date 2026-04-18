@@ -20,38 +20,52 @@
   </div>
 
   <div class="row g-3">
-    <% facilities.forEach(f => { %>
+    <%
+      const typeMap = {
+        library:    { icon: 'bi-book',            bg: '#eff6ff', color: '#2563eb' },
+        recreation: { icon: 'bi-lightning-charge', bg: '#fff0f3', color: '#981e32' },
+        dining:     { icon: 'bi-cup-hot',          bg: '#fff7ed', color: '#d97706' },
+        athletics:  { icon: 'bi-trophy',           bg: '#f0fdf4', color: '#16a34a' },
+        health:     { icon: 'bi-heart-pulse',      bg: '#fdf2f8', color: '#a21caf' },
+      };
+    %>
+    <% facilities.forEach(f => {
+      const ti = typeMap[f.type?.toLowerCase()] || { icon: 'bi-building', bg: '#f5f5f5', color: '#666' };
+      const st = (f.status || 'closed').toLowerCase();
+    %>
       <div class="col-12 col-md-6 col-lg-4">
         <a href="/student/facilities/<%= f.id %>" class="text-decoration-none">
-          <div class="card h-100 card-status-<%= f.status.toLowerCase() %>">
+          <div class="card h-100 card-status-<%= st %>">
             <div class="card-body">
-              <div class="d-flex justify-content-between align-items-start mb-2">
-                <div>
-                  <div class="section-label"><%= f.type %></div>
-                  <h5 class="card-title mb-0 fw-semibold" style="font-size:0.97rem;"><%= f.name %></h5>
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="facility-icon" style="background:<%= ti.bg %>;color:<%= ti.color %>;">
+                  <i class="bi <%= ti.icon %>"></i>
+                </div>
+                <div style="min-width:0;">
+                  <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#aaa;"><%= f.type %></div>
+                  <h5 class="card-title mb-0 fw-semibold text-truncate" style="font-size:0.95rem;"><%= f.name %></h5>
                 </div>
                 <% if (f.badge) { %>
-                  <span class="badge badge-soft ms-2" style="font-size:0.7rem;"><%= f.badge %></span>
+                  <span class="badge badge-soft ms-auto text-capitalize flex-shrink-0" style="font-size:0.68rem;"><%= f.badge %></span>
                 <% } %>
               </div>
-              <div class="d-flex align-items-center gap-2 my-2">
-                <span class="status-dot status-dot-<%= f.status.toLowerCase() %>"></span>
-                <span class="fw-semibold text-capitalize" style="font-size:1rem;"><%= f.status %></span>
+              <div class="d-flex align-items-center gap-2">
+                <span class="status-dot status-dot-<%= st %>"></span>
+                <span class="fw-semibold text-capitalize" style="font-size:0.95rem;"><%= f.status %></span>
               </div>
+              <div class="busyness-bar"><div class="busyness-bar-fill <%= st %>"></div></div>
               <% if (f.updated) { %>
-                <div class="text-muted" style="font-size:0.78rem;">Updated <%= f.updated %></div>
+                <div class="text-muted mt-2" style="font-size:0.75rem;"><i class="bi bi-clock me-1"></i>Updated <%= f.updated %></div>
               <% } else { %>
-                <div class="text-muted" style="font-size:0.78rem;">No active reports</div>
-              <% } %>
-              <% if (f.description) { %>
-                <p class="text-muted mt-2 mb-0" style="font-size:0.8rem;"><%= f.description %></p>
+                <div class="text-muted mt-2" style="font-size:0.75rem;">No active reports</div>
               <% } %>
               <% if (f.hours) { %>
-                <div class="text-muted mt-2" style="font-size:0.78rem;"><%= f.hours %></div>
+                <div class="text-muted mt-1" style="font-size:0.75rem;"><i class="bi bi-door-open me-1"></i><%= f.hours %></div>
               <% } %>
             </div>
-            <div class="card-footer pt-2 pb-2 px-3">
-              <span class="text-muted" style="font-size:0.78rem;">Tap to report →</span>
+            <div class="card-footer pt-2 pb-2 px-3 d-flex align-items-center justify-content-between">
+              <span class="text-muted" style="font-size:0.78rem;">Report busyness</span>
+              <i class="bi bi-chevron-right text-muted" style="font-size:0.78rem;"></i>
             </div>
           </div>
         </a>

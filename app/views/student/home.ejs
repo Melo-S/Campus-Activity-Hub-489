@@ -13,8 +13,8 @@
 
 <main class="container my-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h5 fw-semibold mb-0">Campus Activity Hub</h1>
-    <a href="/student/activities/new" class="btn btn-primary btn-sm d-none d-md-inline-block">+ Create Activity</a>
+    <h1 class="h5 fw-semibold mb-0">Good to see you, <%= currentUser.name.split(' ')[0] %></h1>
+    <a href="/student/activities/new" class="btn btn-primary btn-sm d-none d-md-inline-block"><i class="bi bi-plus-lg me-1"></i>Create Activity</a>
   </div>
 
   <%# Bootstrap tabs — the active tab persists with the data-bs-toggle="tab" JS attribute %>
@@ -35,24 +35,39 @@
     <%# ── Happening Now tab: facility busyness cards ── %>
     <div class="tab-pane fade show active" id="tab-now">
       <div class="row g-3">
-        <% facilities.forEach(f => { %>
+        <% facilities.forEach(f => {
+          const typeMap = {
+            library:     { icon: 'bi-book',           bg: '#eff6ff', color: '#2563eb', emoji: '📚' },
+            recreation:  { icon: 'bi-lightning-charge',bg: '#fff0f3', color: '#981e32', emoji: '⚡' },
+            dining:      { icon: 'bi-cup-hot',         bg: '#fff7ed', color: '#d97706', emoji: '🍽️' },
+            athletics:   { icon: 'bi-trophy',          bg: '#f0fdf4', color: '#16a34a', emoji: '🏆' },
+            health:      { icon: 'bi-heart-pulse',     bg: '#fdf2f8', color: '#a21caf', emoji: '🏥' },
+          };
+          const ti = typeMap[f.type?.toLowerCase()] || { icon: 'bi-building', bg: '#f5f5f5', color: '#666', emoji: '🏢' };
+          const st = (f.status || 'closed').toLowerCase();
+        %>
           <div class="col-12 col-md-4">
             <a href="/student/facilities/<%= f.id %>" class="text-decoration-none">
-              <div class="card h-100 card-status-<%= f.status.toLowerCase() %>">
+              <div class="card h-100 card-status-<%= st %>">
                 <div class="card-body">
-                  <div class="d-flex justify-content-between align-items-start mb-2">
-                    <span class="fw-semibold" style="font-size:0.92rem;"><%= f.name %></span>
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <div class="facility-icon" style="background:<%= ti.bg %>;color:<%= ti.color %>;">
+                      <i class="bi <%= ti.icon %>"></i>
+                    </div>
+                    <div style="min-width:0;">
+                      <div class="fw-semibold text-truncate" style="font-size:0.88rem;"><%= f.name %></div>
+                      <div style="font-size:0.72rem;color:#999;text-transform:capitalize;"><%= f.type %></div>
+                    </div>
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="status-dot status-dot-<%= st %>"></span>
+                    <span class="fw-semibold text-capitalize" style="font-size:0.88rem;"><%= f.status %></span>
                     <% if (f.badge) { %>
-                      <span class="badge badge-soft ms-2 text-capitalize" style="font-size:0.7rem;"><%= f.badge %></span>
+                      <span class="badge badge-soft ms-auto text-capitalize" style="font-size:0.68rem;"><%= f.badge %></span>
                     <% } %>
                   </div>
-                  <div class="d-flex align-items-center gap-2 mb-1">
-                    <span class="status-dot status-dot-<%= f.status.toLowerCase() %>"></span>
-                    <span class="fw-semibold text-capitalize" style="font-size:0.95rem;">
-                      <%= f.status %>
-                    </span>
-                  </div>
-                  <div class="text-muted" style="font-size:0.78rem;">
+                  <div class="busyness-bar"><div class="busyness-bar-fill <%= st %>"></div></div>
+                  <div class="text-muted mt-2" style="font-size:0.72rem;">
                     <% if (f.updated) { %><%= f.updated %><% } else { %>No reports yet<% } %>
                   </div>
                 </div>
@@ -67,23 +82,28 @@
     <div class="tab-pane fade" id="tab-today">
       <% if (todayActivities.length === 0) { %>
         <div class="text-center py-5 text-muted">
-          <p class="mb-2">No activities scheduled for today.</p>
+          <div style="font-size:2rem;margin-bottom:0.5rem;">🗓️</div>
+          <p class="mb-2" style="font-size:0.9rem;">No activities scheduled for today.</p>
           <a href="/student/activities/new" class="btn btn-outline-primary btn-sm">Create one</a>
         </div>
       <% } else { %>
         <div class="row g-3">
+          <% const actIconMap = { study:'bi-journal-text', workout:'bi-lightning-charge', dinner:'bi-cup-hot', other:'bi-three-dots' }; %>
           <% todayActivities.forEach(a => { %>
             <div class="col-12 col-md-6">
               <a href="/student/activities/<%= a.id %>" class="text-decoration-none">
-                <div class="card shadow-sm h-100">
+                <div class="card h-100">
                   <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-2">
                       <span class="fw-semibold" style="font-size:0.92rem;"><%= a.title %></span>
-                      <span class="activity-chip ms-2"><%= a.type %></span>
+                      <span class="activity-chip ms-2">
+                        <i class="bi <%= actIconMap[a.type] || 'bi-three-dots' %>"></i>
+                        <%= a.type %>
+                      </span>
                     </div>
                     <div class="text-muted mb-2" style="font-size:0.8rem;">
-                      <%= new Date(a.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %>
-                      <% if (a.Location) { %>&nbsp;&middot; <%= a.Location.name %><% } %>
+                      <i class="bi bi-clock me-1"></i><%= new Date(a.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %>
+                      <% if (a.Location) { %>&nbsp;&middot; <i class="bi bi-geo-alt me-1"></i><%= a.Location.name %><% } %>
                     </div>
                     <div class="d-flex align-items-center gap-2">
                       <span class="avatar avatar-sm"><%= a.creator.name.charAt(0) %></span>
@@ -104,28 +124,35 @@
     <div class="tab-pane fade" id="tab-friends">
       <% if (friendActivities.length === 0) { %>
         <div class="text-center py-5 text-muted">
-          <p class="mb-2">No upcoming activities from your friends.</p>
+          <div style="font-size:2rem;margin-bottom:0.5rem;">👥</div>
+          <p class="mb-2" style="font-size:0.9rem;">No upcoming activities from your friends.</p>
           <a href="/student/friends" class="btn btn-outline-primary btn-sm">Manage Friends</a>
         </div>
       <% } else { %>
         <div class="row g-3">
+          <% const actIconMap2 = { study:'bi-journal-text', workout:'bi-lightning-charge', dinner:'bi-cup-hot', other:'bi-three-dots' }; %>
           <% friendActivities.forEach(a => { %>
             <div class="col-12 col-md-6">
               <a href="/student/activities/<%= a.id %>" class="text-decoration-none">
-                <div class="card shadow-sm h-100">
+                <div class="card h-100">
                   <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start mb-1">
-                      <span class="fw-semibold text-dark"><%= a.title %></span>
-                      <span class="badge bg-light text-dark border text-capitalize"><%= a.type %></span>
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                      <span class="fw-semibold" style="font-size:0.92rem;"><%= a.title %></span>
+                      <span class="activity-chip ms-2">
+                        <i class="bi <%= actIconMap2[a.type] || 'bi-three-dots' %>"></i>
+                        <%= a.type %>
+                      </span>
                     </div>
-                    <div class="text-muted small mb-2">
-                      <%= new Date(a.scheduledAt).toLocaleDateString([], { month: 'short', day: 'numeric' }) %>
+                    <div class="text-muted mb-2" style="font-size:0.8rem;">
+                      <i class="bi bi-calendar3 me-1"></i><%= new Date(a.scheduledAt).toLocaleDateString([], { month: 'short', day: 'numeric' }) %>
                       at <%= new Date(a.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %>
-                      <% if (a.Location) { %> &middot; <%= a.Location.name %><% } %>
+                      <% if (a.Location) { %>&nbsp;&middot; <%= a.Location.name %><% } %>
                     </div>
-                    <div class="text-muted small">
-                      By <%= a.creator.name %> &middot;
-                      <%= a.Participants.length %><% if (a.maxParticipants) { %>/<%= a.maxParticipants %><% } %> going
+                    <div class="d-flex align-items-center gap-2">
+                      <span class="avatar avatar-sm"><%= a.creator.name.charAt(0) %></span>
+                      <span class="text-muted" style="font-size:0.78rem;">
+                        <%= a.creator.name %> &middot; <%= a.Participants.length %><% if (a.maxParticipants) { %>/<%= a.maxParticipants %><% } %> going
+                      </span>
                     </div>
                   </div>
                 </div>

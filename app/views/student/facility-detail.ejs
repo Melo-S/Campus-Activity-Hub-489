@@ -11,124 +11,116 @@
 
 <%- include('../partials/student-nav', { page: 'facilities' }) %>
 
-<main class="container my-4" style="max-width: 700px;">
+<main class="container my-4" style="max-width:680px;">
 
-  <%# Back link %>
-  <a href="/student/facilities" class="text-muted small text-decoration-none d-inline-block mb-3">&larr; All Facilities</a>
+  <a href="/student/facilities" class="back-link">&larr; Facilities</a>
 
-  <%# Header card showing current status %>
-  <div class="card shadow-sm mb-4">
+  <%# Header card %>
+  <%
+    const statusColors = { light:'#16a34a', moderate:'#d97706', busy:'#dc2626', closed:'#bbb' };
+    const resolvedStatus = (latest ? latest.status : typicalStatus) || 'closed';
+    const borderColor = statusColors[resolvedStatus] || '#bbb';
+  %>
+  <div class="card mb-4" style="border-left:4px solid <%= borderColor %>;">
     <div class="card-body">
-      <div class="text-muted small text-capitalize mb-1"><%= location.type %></div>
-      <div class="d-flex justify-content-between align-items-start">
-        <h2 class="h4 fw-semibold mb-0"><%= location.name %></h2>
+      <div class="section-label"><%= location.type %></div>
+      <div class="d-flex justify-content-between align-items-start mb-2">
+        <h2 class="h5 fw-semibold mb-0"><%= location.name %></h2>
         <% if (latest) { %>
-          <%# Real report — show status with source badge %>
-          <div class="text-end">
-            <span class="badge bg-<%= latest.statusColor %> fs-6 text-capitalize d-block mb-1"><%= latest.status %></span>
-            <span class="badge <%= latest.type === 'verified' ? 'bg-primary' : 'bg-secondary' %>">
-              <%= latest.type === 'verified' ? 'Verified' : 'Crowd report' %>
-            </span>
-          </div>
+          <span class="badge badge-soft ms-2"><%= latest.type === 'verified' ? 'Verified' : 'Crowd' %></span>
         <% } else if (typicalStatus) { %>
-          <%# No real report — show algorithm estimate %>
-          <div class="text-end">
-            <span class="badge bg-<%= {light:'success',moderate:'warning',busy:'danger'}[typicalStatus] || 'secondary' %> fs-6 text-capitalize d-block mb-1"><%= typicalStatus %></span>
-            <span class="badge bg-light text-dark border">Typical pattern</span>
-          </div>
-        <% } else { %>
-          <span class="badge bg-secondary fs-6">Closed</span>
+          <span class="badge badge-soft ms-2">Typical</span>
         <% } %>
       </div>
+
+      <div class="d-flex align-items-center gap-2 mb-2">
+        <span class="status-dot status-dot-<%= resolvedStatus %>"></span>
+        <span class="fw-semibold text-capitalize" style="font-size:1rem;"><%= resolvedStatus %></span>
+        <% if (latest) { %>
+          <span class="text-muted" style="font-size:0.78rem;">· updated <%= (() => { const m = Math.floor((Date.now() - new Date(latest.createdAt))/60000); return m < 1 ? 'just now' : m + 'm ago'; })() %></span>
+        <% } %>
+      </div>
+
       <% if (location.description) { %>
-        <p class="text-muted mt-2 mb-0 small"><%= location.description %></p>
+        <p class="mb-2" style="font-size:0.85rem;color:#555;"><%= location.description %></p>
       <% } %>
       <% if (location.hours) { %>
-        <div class="text-muted small mt-2">
-          <span class="fw-semibold">Hours:</span> <%= location.hours %>
-        </div>
+        <div style="font-size:0.78rem;color:#777;"><%= location.hours %></div>
       <% } %>
     </div>
   </div>
 
-  <%# Error banner %>
   <% if (error) { %>
-    <div class="alert alert-danger py-2">Invalid status value. Please try again.</div>
+    <div class="alert alert-danger py-2 mb-3">Invalid status. Please try again.</div>
   <% } %>
 
-  <%# Submit a report card %>
-  <div class="card shadow-sm mb-4">
-    <div class="card-body">
-      <h6 class="fw-semibold mb-3">How busy is it right now?</h6>
+  <%# Report busyness %>
+  <div class="card mb-4">
+    <div class="card-header">How busy is it right now?</div>
+    <div class="card-body pb-3">
       <form method="POST" action="/student/facilities/<%= location.id %>/updates">
-        <div class="d-flex gap-2 flex-wrap">
-          <%# Each button submits the form with a different status value %>
-          <button type="submit" name="status" value="light"
-                  class="btn btn-outline-success flex-fill">
-            Light
-            <div class="small opacity-75">Easy to find a spot</div>
+        <div class="d-flex gap-2">
+          <button type="submit" name="status" value="light" class="btn flex-fill"
+            style="border:1px solid #16a34a;color:#16a34a;background:#fff;font-size:0.88rem;">
+            <div class="fw-semibold">Light</div>
+            <div style="font-size:0.75rem;opacity:0.8;">Easy to find a spot</div>
           </button>
-          <button type="submit" name="status" value="moderate"
-                  class="btn btn-outline-warning flex-fill">
-            Moderate
-            <div class="small opacity-75">Getting busy</div>
+          <button type="submit" name="status" value="moderate" class="btn flex-fill"
+            style="border:1px solid #d97706;color:#d97706;background:#fff;font-size:0.88rem;">
+            <div class="fw-semibold">Moderate</div>
+            <div style="font-size:0.75rem;opacity:0.8;">Getting busy</div>
           </button>
-          <button type="submit" name="status" value="busy"
-                  class="btn btn-outline-danger flex-fill">
-            Busy
-            <div class="small opacity-75">Hard to find a spot</div>
+          <button type="submit" name="status" value="busy" class="btn flex-fill"
+            style="border:1px solid #dc2626;color:#dc2626;background:#fff;font-size:0.88rem;">
+            <div class="fw-semibold">Busy</div>
+            <div style="font-size:0.75rem;opacity:0.8;">Hard to find a spot</div>
           </button>
         </div>
       </form>
     </div>
   </div>
 
-  <%# Active update feed %>
-  <h6 class="fw-semibold mb-3">Active Reports</h6>
+  <%# Active reports feed %>
+  <div class="section-label mb-2">Active Reports</div>
 
   <% if (feed.length === 0) { %>
-    <div class="card shadow-sm">
-      <div class="card-body text-center text-muted py-4">
-        No active reports right now. Be the first to post one above!
-      </div>
+    <div class="card">
+      <div class="empty-state">No active reports. Be the first to post one above.</div>
     </div>
   <% } else { %>
     <% feed.forEach(u => { %>
-      <div class="card shadow-sm mb-2">
+      <div class="card mb-2">
         <div class="card-body py-3">
-          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-
-            <%# Left: status + who posted it %>
-            <div>
-              <span class="badge bg-<%= u.statusColor %> text-capitalize me-1"><%= u.status %></span>
-              <% if (u.type === 'verified') { %>
-                <span class="badge bg-primary me-1">Verified</span>
-              <% } %>
-              <span class="text-muted small">
-                <%= u.postedBy %> &middot; <%= u.posted %>
-              </span>
+          <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap">
+            <div class="d-flex align-items-center gap-2">
+              <span class="avatar avatar-sm"><%= u.postedBy.charAt(0) %></span>
+              <div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="status-dot status-dot-<%= u.status %>"></span>
+                  <span class="fw-semibold text-capitalize" style="font-size:0.88rem;"><%= u.status %></span>
+                  <% if (u.type === 'verified') { %>
+                    <span class="badge badge-soft" style="font-size:0.7rem;">Verified</span>
+                  <% } %>
+                </div>
+                <div style="font-size:0.75rem;color:#888;"><%= u.postedBy %> · <%= u.posted %></div>
+              </div>
             </div>
-
-            <%# Right: confirm / disagree vote buttons + report %>
             <div class="d-flex gap-2 align-items-center">
-              <form method="POST"
-                    action="/student/facilities/<%= location.id %>/updates/<%= u.id %>/vote">
+              <form method="POST" action="/student/facilities/<%= location.id %>/updates/<%= u.id %>/vote">
                 <input type="hidden" name="type" value="confirm">
-                <button class="btn btn-sm <%= u.myVote === 'confirm' ? 'btn-success' : 'btn-outline-success' %>">
-                  Confirm (<%= u.confirms %>)
+                <button class="btn btn-sm <%= u.myVote === 'confirm' ? 'btn-success' : 'btn-outline-success' %>" style="font-size:0.78rem;">
+                  Agree <%= u.confirms > 0 ? '(' + u.confirms + ')' : '' %>
                 </button>
               </form>
-              <form method="POST"
-                    action="/student/facilities/<%= location.id %>/updates/<%= u.id %>/vote">
+              <form method="POST" action="/student/facilities/<%= location.id %>/updates/<%= u.id %>/vote">
                 <input type="hidden" name="type" value="disagree">
-                <button class="btn btn-sm <%= u.myVote === 'disagree' ? 'btn-danger' : 'btn-outline-danger' %>">
-                  Disagree (<%= u.disagrees %>)
+                <button class="btn btn-sm <%= u.myVote === 'disagree' ? 'btn-danger' : 'btn-outline-danger' %>" style="font-size:0.78rem;">
+                  Disagree <%= u.disagrees > 0 ? '(' + u.disagrees + ')' : '' %>
                 </button>
               </form>
               <a href="/student/report?contentType=statusUpdate&contentId=<%= u.id %>"
-                 class="btn btn-sm btn-outline-secondary">Report</a>
+                 class="text-muted" style="font-size:0.75rem;">Report</a>
             </div>
-
           </div>
         </div>
       </div>

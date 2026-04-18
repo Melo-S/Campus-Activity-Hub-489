@@ -11,50 +11,50 @@
 
 <%- include('../partials/student-nav', { page: 'schedule' }) %>
 
-<main class="container my-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-      <h1 class="h4 fw-semibold mb-1">My Schedule</h1>
-      <p class="text-muted mb-0">Activities you've joined or created.</p>
-    </div>
-    <a href="/student/activities/new" class="btn btn-primary btn-sm">+ Create Activity</a>
-  </div>
+<main class="container my-4" style="max-width:760px;">
 
-  <%# ── Upcoming ── %>
-  <h6 class="fw-semibold text-uppercase text-muted small mb-2 mt-3">Upcoming</h6>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h5 fw-semibold mb-0"><i class="bi bi-calendar3 me-2" style="color:#981e32;"></i>My Schedule</h1>
+    <a href="/student/activities/new" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>New Activity</a>
+  </div>
+  <%
+    const schedIconMap = { study:'bi-journal-text', workout:'bi-lightning-charge', dinner:'bi-cup-hot', other:'bi-three-dots' };
+  %>
+
+  <div class="section-label mb-2">Upcoming</div>
 
   <% if (upcoming.length === 0 && created.length === 0) { %>
-    <div class="card shadow-sm mb-4">
-      <div class="card-body text-center text-muted py-4">
-        Nothing coming up. <a href="/student/activities/new">Create an activity</a> or RSVP to one from the home feed.
+    <div class="card mb-4">
+      <div class="empty-state">
+        Nothing coming up. <a href="/student/activities/new">Create an activity</a> or RSVP from the home feed.
       </div>
     </div>
   <% } else { %>
     <div class="row g-3 mb-4">
-
-      <%# Activities the user RSVP'd to (but didn't create) %>
       <% upcoming.forEach(p => { const a = p.Activity; %>
         <div class="col-12 col-md-6">
           <a href="/student/activities/<%= a.id %>" class="text-decoration-none">
-            <div class="card shadow-sm h-100">
+            <div class="card h-100">
               <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start mb-1">
-                  <span class="fw-semibold text-dark"><%= a.title %></span>
-                  <span class="badge bg-light text-dark border text-capitalize"><%= a.type %></span>
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <span class="fw-semibold" style="font-size:0.92rem;"><%= a.title %></span>
+                  <span class="activity-chip ms-2"><i class="bi <%= schedIconMap[a.type] || 'bi-three-dots' %>"></i> <%= a.type %></span>
                 </div>
-                <div class="text-muted small mb-1">
-                  <%# toLocaleDateString + toLocaleTimeString format the JS Date into readable strings %>
-                  <%= new Date(a.scheduledAt).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' }) %>
-                  at <%= new Date(a.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %>
-                  <% if (a.Location) { %> &middot; <%= a.Location.name %><% } %>
+                <div class="text-muted mb-1" style="font-size:0.8rem;">
+                  <%= new Date(a.scheduledAt).toLocaleDateString([], { weekday:'short', month:'short', day:'numeric' }) %>
+                  at <%= new Date(a.scheduledAt).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }) %>
+                  <% if (a.Location) { %>&nbsp;· <%= a.Location.name %><% } %>
                 </div>
-                <div class="text-muted small">By <%= a.creator.name %></div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="avatar avatar-sm"><%= a.creator.name.charAt(0) %></span>
+                  <span style="font-size:0.78rem;color:#888;"><%= a.creator.name %></span>
+                </div>
               </div>
-              <div class="card-footer bg-transparent border-top-0 pt-0 pb-2 px-3">
+              <div class="card-footer py-2 px-3">
                 <% if (p.status === 'checked_in') { %>
-                  <span class="badge bg-success">Checked In</span>
+                  <span style="font-size:0.75rem;color:#16a34a;font-weight:600;">Checked in</span>
                 <% } else { %>
-                  <span class="badge bg-light text-dark border">RSVP'd</span>
+                  <span style="font-size:0.75rem;color:#888;">RSVP'd</span>
                 <% } %>
               </div>
             </div>
@@ -62,54 +62,49 @@
         </div>
       <% }) %>
 
-      <%# Activities the user created (upcoming) %>
       <% created.forEach(a => { %>
-        <%# Skip if already shown in the RSVP list above to avoid duplicates %>
-        <% const alreadyShown = upcoming.some(p => p.Activity.id === a.id); %>
-        <% if (!alreadyShown) { %>
+        <% if (!upcoming.some(p => p.Activity.id === a.id)) { %>
           <div class="col-12 col-md-6">
             <a href="/student/activities/<%= a.id %>" class="text-decoration-none">
-              <div class="card shadow-sm h-100">
+              <div class="card h-100">
                 <div class="card-body">
-                  <div class="d-flex justify-content-between align-items-start mb-1">
-                    <span class="fw-semibold text-dark"><%= a.title %></span>
-                    <span class="badge bg-light text-dark border text-capitalize"><%= a.type %></span>
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="fw-semibold" style="font-size:0.92rem;"><%= a.title %></span>
+                    <span class="activity-chip ms-2"><i class="bi <%= schedIconMap[a.type] || 'bi-three-dots' %>"></i> <%= a.type %></span>
                   </div>
-                  <div class="text-muted small mb-1">
-                    <%= new Date(a.scheduledAt).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' }) %>
-                    at <%= new Date(a.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %>
-                    <% if (a.Location) { %> &middot; <%= a.Location.name %><% } %>
+                  <div class="text-muted mb-1" style="font-size:0.8rem;">
+                    <%= new Date(a.scheduledAt).toLocaleDateString([], { weekday:'short', month:'short', day:'numeric' }) %>
+                    at <%= new Date(a.scheduledAt).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }) %>
+                    <% if (a.Location) { %>&nbsp;· <%= a.Location.name %><% } %>
                   </div>
-                  <div class="text-muted small"><%= a.Participants.length %> going</div>
+                  <div style="font-size:0.78rem;color:#888;"><%= a.Participants.length %> going</div>
                 </div>
-                <div class="card-footer bg-transparent border-top-0 pt-0 pb-2 px-3">
-                  <span class="badge bg-primary">You created this</span>
+                <div class="card-footer py-2 px-3">
+                  <span style="font-size:0.75rem;color:#981e32;font-weight:600;">You created this</span>
                 </div>
               </div>
             </a>
           </div>
         <% } %>
       <% }) %>
-
     </div>
   <% } %>
 
-  <%# ── Past ── %>
   <% if (past.length > 0) { %>
-    <h6 class="fw-semibold text-uppercase text-muted small mb-2">Past</h6>
+    <div class="section-label mb-2">Past</div>
     <div class="row g-3">
       <% past.forEach(p => { const a = p.Activity; %>
         <div class="col-12 col-md-6">
           <a href="/student/activities/<%= a.id %>" class="text-decoration-none">
-            <div class="card shadow-sm h-100 opacity-75">
+            <div class="card h-100" style="opacity:0.65;">
               <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start mb-1">
-                  <span class="fw-semibold text-dark"><%= a.title %></span>
-                  <span class="badge bg-light text-dark border text-capitalize"><%= a.type %></span>
+                  <span class="fw-semibold" style="font-size:0.9rem;"><%= a.title %></span>
+                  <span class="activity-chip ms-2"><i class="bi <%= schedIconMap[a.type] || 'bi-three-dots' %>"></i> <%= a.type %></span>
                 </div>
-                <div class="text-muted small">
-                  <%= new Date(a.scheduledAt).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' }) %>
-                  <% if (a.Location) { %> &middot; <%= a.Location.name %><% } %>
+                <div style="font-size:0.78rem;color:#888;">
+                  <%= new Date(a.scheduledAt).toLocaleDateString([], { weekday:'short', month:'short', day:'numeric' }) %>
+                  <% if (a.Location) { %>&nbsp;· <%= a.Location.name %><% } %>
                 </div>
               </div>
             </div>

@@ -11,24 +11,31 @@
 
 <%- include('../partials/student-nav', { page: 'profile' }) %>
 
-<main class="container my-4" style="max-width: 560px;">
-  <h1 class="h4 fw-semibold mb-1">My Profile</h1>
-  <p class="text-muted mb-4">Update your name, email, or password.</p>
+<main class="container my-4" style="max-width:520px;">
 
-  <%# Success / error banners — driven by ?success= and ?error= query params %>
+  <%# Avatar header %>
+  <div class="d-flex align-items-center gap-3 mb-4">
+    <div class="avatar" style="width:52px;height:52px;font-size:1.2rem;background:#e8e0e2;color:#981e32;">
+      <%= user.name.charAt(0).toUpperCase() %>
+    </div>
+    <div>
+      <div class="fw-semibold" style="font-size:1rem;"><%= user.name %></div>
+      <div style="font-size:0.8rem;color:#888;text-transform:capitalize;"><%= user.role %> · <%= user.email %></div>
+    </div>
+  </div>
+
   <% if (success === 'profile') { %>
-    <div class="alert alert-success py-2">Profile updated successfully.</div>
+    <div class="alert alert-success py-2 mb-3" style="font-size:0.875rem;">Profile updated.</div>
   <% } else if (success === 'password') { %>
-    <div class="alert alert-success py-2">Password changed successfully.</div>
+    <div class="alert alert-success py-2 mb-3" style="font-size:0.875rem;">Password changed.</div>
   <% } %>
   <% if (error) { %>
-    <div class="alert alert-danger py-2"><%= error %></div>
+    <div class="alert alert-danger py-2 mb-3" style="font-size:0.875rem;"><%= error %></div>
   <% } %>
 
-  <%# ── Update name + email ── %>
-  <div class="card shadow-sm mb-4">
-    <div class="card-body p-4">
-      <h6 class="fw-semibold mb-3">Account details</h6>
+  <div class="card mb-3">
+    <div class="card-header">Account details</div>
+    <div class="card-body">
       <form method="POST" action="/student/profile">
         <div class="mb-3">
           <label class="form-label" for="name">Full name</label>
@@ -36,24 +43,18 @@
                  value="<%= user.name %>" required>
         </div>
         <div class="mb-3">
-          <label class="form-label" for="email">Email address</label>
+          <label class="form-label" for="email">Email</label>
           <input id="email" name="email" type="email" class="form-control"
                  value="<%= user.email %>" required>
         </div>
-        <div class="mb-3">
-          <label class="form-label">Role</label>
-          <%# Role is not editable — displayed for info only %>
-          <input type="text" class="form-control text-capitalize" value="<%= user.role %>" disabled>
-        </div>
-        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <button type="submit" class="btn btn-primary btn-sm">Save</button>
       </form>
     </div>
   </div>
 
-  <%# ── Change password ── %>
-  <div class="card shadow-sm">
-    <div class="card-body p-4">
-      <h6 class="fw-semibold mb-3">Change password</h6>
+  <div class="card">
+    <div class="card-header">Change password</div>
+    <div class="card-body">
       <form method="POST" action="/student/profile/password">
         <div class="mb-3">
           <label class="form-label" for="currentPassword">Current password</label>
@@ -70,7 +71,7 @@
           <input id="confirmNewPassword" name="confirmNewPassword" type="password"
                  class="form-control" required>
         </div>
-        <button type="submit" class="btn btn-outline-primary">Change Password</button>
+        <button type="submit" class="btn btn-outline-secondary btn-sm">Update password</button>
       </form>
     </div>
   </div>
