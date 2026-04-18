@@ -7,7 +7,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="/assets/css/styles.css" rel="stylesheet">
 </head>
-<body class="bg-light">
+<body>
 
 <%- include('../partials/student-nav', { page: 'friends' }) %>
 
@@ -37,9 +37,12 @@
     <div class="list-group shadow-sm mb-4">
       <% pendingReceived.forEach(req => { %>
         <div class="list-group-item d-flex justify-content-between align-items-center">
-          <div>
-            <div class="fw-semibold"><%= req.requester.name %></div>
-            <div class="text-muted small"><%= req.requester.email %></div>
+          <div class="d-flex align-items-center gap-3">
+            <span class="avatar"><%= req.requester.name.charAt(0) %></span>
+            <div>
+              <div class="fw-semibold" style="font-size:0.9rem;"><%= req.requester.name %></div>
+              <div class="text-muted" style="font-size:0.78rem;"><%= req.requester.email %></div>
+            </div>
           </div>
           <%# POST to accept — the friendship id is in the URL param %>
           <form method="POST" action="/student/friends/<%= req.id %>/accept">
@@ -62,9 +65,12 @@
   <% } else { %>
     <div class="list-group shadow-sm mb-4">
       <% friends.forEach(f => { %>
-        <div class="list-group-item">
-          <div class="fw-semibold"><%= f.user.name %></div>
-          <div class="text-muted small"><%= f.user.email %></div>
+        <div class="list-group-item d-flex align-items-center gap-3">
+          <span class="avatar"><%= f.user.name.charAt(0) %></span>
+          <div>
+            <div class="fw-semibold" style="font-size:0.9rem;"><%= f.user.name %></div>
+            <div class="text-muted" style="font-size:0.78rem;"><%= f.user.email %></div>
+          </div>
         </div>
       <% }) %>
     </div>

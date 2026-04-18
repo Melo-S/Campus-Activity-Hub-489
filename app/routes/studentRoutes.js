@@ -29,6 +29,14 @@ router.post("/student/friends/:id/accept", requireAuth, student.acceptFriendRequ
 // My Schedule
 router.get("/student/schedule", requireAuth, student.renderSchedule);
 
+// Campus Map
+router.get("/student/map", requireAuth, student.renderMap);
+
+// Profile
+router.get("/student/profile",          requireAuth, student.renderProfile);
+router.post("/student/profile",         requireAuth, student.updateProfile);
+router.post("/student/profile/password",requireAuth, student.changePassword);
+
 // Join by invite code (public-ish — still requires login)
 router.get("/join/:code", requireAuth, student.renderJoin);
 router.post("/join/:code", requireAuth, student.joinByCode);

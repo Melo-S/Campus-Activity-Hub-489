@@ -5,8 +5,8 @@ const bcrypt = require("bcrypt");
 const { sequelize, User, Location, StatusUpdate, Activity, Participant } = require("./models");
 
 async function seed() {
-  // force:true drops and recreates all tables — gives us a clean slate every run
-  await sequelize.sync({ force: true });
+  // sync() creates missing tables without touching existing data
+  await sequelize.sync();
   console.log("Tables created.");
 
   // ── Locations ─────────────────────────────────────────────────────────────
@@ -53,6 +53,96 @@ async function seed() {
       type: "other",
       description: "Student union building — lounge seating, study tables, meeting rooms, and food vendors.",
       hours: "Mon–Fri 7am–11pm · Sat 9am–11pm · Sun 10am–11pm",
+    },
+  });
+
+  const [chinook] = await Location.findOrCreate({
+    where: { name: "Chinook Student Center" },
+    defaults: {
+      type: "dining",
+      description: "All-you-care-to-eat dining hall near the northeast residence halls. Known for international food stations.",
+      hours: "Mon–Fri 7am–9pm · Sat–Sun 9am–8pm",
+    },
+  });
+
+  const [ferdinands] = await Location.findOrCreate({
+    where: { name: "Ferdinand's" },
+    defaults: {
+      type: "dining",
+      description: "WSU's iconic creamery and deli in the Food Science building. Famous for Cougar Gold cheese and ice cream.",
+      hours: "Mon–Fri 9am–5pm · Sat–Sun Closed",
+    },
+  });
+
+  await Location.findOrCreate({
+    where: { name: "Bohler Gym" },
+    defaults: {
+      type: "rec",
+      description: "Older recreation facility near the athletic complex. Has a weight room, basketball courts, and racquetball courts.",
+      hours: "Mon–Fri 6am–10pm · Sat 8am–8pm · Sun 10am–8pm",
+    },
+  });
+
+  await Location.findOrCreate({
+    where: { name: "Mooberry Track" },
+    defaults: {
+      type: "rec",
+      description: "Outdoor 400m track and field area open to students. Great for runs and outdoor workouts.",
+      hours: "Daily 6am–10pm (weather permitting)",
+    },
+  });
+
+  await Location.findOrCreate({
+    where: { name: "Beasley Coliseum" },
+    defaults: {
+      type: "other",
+      description: "WSU's main events arena. Hosts basketball games, concerts, and large campus events.",
+      hours: "Event days only — check WSU Athletics",
+    },
+  });
+
+  await Location.findOrCreate({
+    where: { name: "Glenn Terrell Mall" },
+    defaults: {
+      type: "other",
+      description: "The central outdoor mall running through the heart of campus. Popular for studying, hanging out, and events.",
+      hours: "Open 24 hours",
+    },
+  });
+
+  await Location.findOrCreate({
+    where: { name: "WSU Bookstore" },
+    defaults: {
+      type: "other",
+      description: "Campus bookstore in the CUB. Textbooks, supplies, WSU gear, and a café inside.",
+      hours: "Mon–Fri 8am–6pm · Sat 10am–5pm · Sun Closed",
+    },
+  });
+
+  await Location.findOrCreate({
+    where: { name: "Student Recreation Center" },
+    defaults: {
+      type: "rec",
+      description: "Student gym and fitness facility on North Fairway Road near the golf course. Has weight rooms, courts, and cardio equipment.",
+      hours: "Mon–Fri 6am–11pm · Sat 8am–10pm · Sun 10am–9pm",
+    },
+  });
+
+  await Location.findOrCreate({
+    where: { name: "Hollingbery Fieldhouse" },
+    defaults: {
+      type: "rec",
+      description: "Indoor practice facility next to Bohler Gym near the golf course. Has a jogging track, turf field, and fitness areas open to students.",
+      hours: "Mon–Fri 6am–10pm · Sat 8am–8pm · Sun 10am–8pm",
+    },
+  });
+
+  await Location.findOrCreate({
+    where: { name: "Health & Wellness Services" },
+    defaults: {
+      type: "other",
+      description: "Student health clinic on campus for appointments, urgent care, and wellness resources.",
+      hours: "Mon–Fri 8am–5pm · Sat–Sun Closed",
     },
   });
 

@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top shadow-sm">
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
   <div class="container">
     <a class="navbar-brand fw-semibold" href="/student/home">Campus Activity Hub</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#studentNav">
@@ -16,17 +16,30 @@
           <a class="nav-link <%= page === 'friends' ? 'active fw-semibold' : '' %>" href="/student/friends">Friends</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <%= page === 'schedule' ? 'active fw-semibold' : '' %>" href="/student/schedule">My Schedule</a>
+          <a class="nav-link <%= page === 'map' ? 'active fw-semibold' : '' %>" href="/student/map">Map</a>
         </li>
       </ul>
       <div class="d-flex gap-2 align-items-center">
-        <a href="/student/activities/new" class="btn btn-primary btn-sm">+ Create Activity</a>
-        <span class="text-muted small d-none d-lg-inline">
-          <%= currentUser?.name %> &middot; <span class="text-capitalize"><%= currentUser?.role %></span>
-        </span>
-        <form method="POST" action="/logout" class="m-0">
-          <button class="btn btn-outline-secondary btn-sm" type="submit">Logout</button>
-        </form>
+        <a href="/student/activities/new" class="btn btn-sm" style="background:#981e32;color:#fff;border:none;">+ Create</a>
+        <%# Profile dropdown — name shown on desktop, avatar icon on mobile %>
+        <div class="dropdown">
+          <button class="btn btn-outline-light btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+            <span class="d-none d-lg-inline"><%= currentUser?.name %></span>
+            <span class="d-lg-none">Me</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><span class="dropdown-item-text text-muted small text-capitalize"><%= currentUser?.role %></span></li>
+            <li><hr class="dropdown-divider my-1"></li>
+            <li><a class="dropdown-item" href="/student/profile">My Profile</a></li>
+            <li><a class="dropdown-item" href="/student/schedule">My Schedule</a></li>
+            <li><hr class="dropdown-divider my-1"></li>
+            <li>
+              <form method="POST" action="/logout" class="m-0">
+                <button class="dropdown-item text-danger" type="submit">Logout</button>
+              </form>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>

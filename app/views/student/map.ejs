@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Campus Map — Campus Activity Hub</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/css/styles.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    .map-page { display: flex; height: calc(100vh - 58px); }
+
+    /* Sidebar */
+    #location-list {
+      width: 220px;
+      min-width: 220px;
+      overflow-y: auto;
+      background: #fff;
+      border-right: 1px solid #e5e7eb;
+      padding: 12px 0;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    .list-heading {
+      font-size: 11px;
+      font-weight: 700;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 8px 14px 4px;
+    }
+    .loc-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 14px;
+      cursor: pointer;
+      border-radius: 0;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font-size: 12.5px;
+      font-family: inherit;
+    }
+    .loc-item:hover { background: #f3f4f6; }
+    .loc-item.active { background: #eff6ff; }
+    .loc-dot {
+      width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
+    }
+    .loc-name { flex: 1; line-height: 1.3; }
+    .loc-icon { font-size: 14px; }
+
+    #map { height: 100%; width: 100%; }
+
+    /* Marker */
+    .pin-wrap { display: flex; flex-direction: column; align-items: center; }
+    .pin-body {
+      width: 38px; height: 38px;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.28);
+      border: 2px solid #fff;
+      font-size: 15px;
+      position: relative;
+    }
+    .pin-body span { transform: rotate(45deg); display: block; line-height: 1; }
+    .pin-label {
+      margin-top: 4px;
+      background: rgba(255,255,255,0.95);
+      border-radius: 6px;
+      padding: 1px 7px;
+      font-size: 10.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.10);
+      font-family: 'Inter', system-ui, sans-serif;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .pin-pulse {
+      position: absolute;
+      width: 54px; height: 54px;
+      border-radius: 50%;
+      top: -8px; left: -8px;
+      animation: ripple 2.4s ease-out infinite;
+      pointer-events: none;
+    }
+    @keyframes ripple {
+      0%   { transform: scale(0.55); opacity: 0.7; }
+      70%  { transform: scale(1.7);  opacity: 0;   }
+      100% { transform: scale(1.7);  opacity: 0;   }
+    }
+    .pulse-light    { background: rgba(22,163,74,0.22); }
+    .pulse-moderate { background: rgba(217,119,6,0.22); }
+    .pulse-busy     { background: rgba(220,38,38,0.22); }
+
+    /* Popup */
+    .leaflet-popup-content-wrapper {
+      border-radius: 13px; padding: 0;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    .leaflet-popup-content { margin: 13px 15px; min-width: 175px; }
+    .popup-name   { font-weight: 700; font-size: 13.5px; margin-bottom: 4px; }
+    .popup-status { font-size: 12.5px; font-weight: 600; margin-bottom: 3px; text-transform: capitalize; }
+    .popup-meta   { font-size: 11px; color: #6b7280; margin-bottom: 7px; }
+    .popup-badge  { display: inline-block; border-radius: 999px; padding: 2px 8px; font-size: 11px; font-weight: 600; margin-bottom: 6px; }
+    .badge-verified { background: #d1fae5; color: #065f46; }
+    .badge-crowd    { background: #e0f2fe; color: #075985; }
+    .badge-typical  { background: #f3f4f6; color: #374151; }
+    .popup-link {
+      display: block; text-align: center; background: #0052cc; color: #fff;
+      border-radius: 8px; padding: 6px 0; font-size: 12px; font-weight: 600;
+      text-decoration: none; margin-top: 5px;
+    }
+    .popup-link:hover { background: #0041a8; color: #fff; }
+
+    /* Legend */
+    .map-legend {
+      position: absolute; bottom: 24px; right: 16px;
+      background: rgba(255,255,255,0.95);
+      border-radius: 10px; padding: 9px 13px;
+      font-size: 11.5px;
+      font-family: 'Inter', system-ui, sans-serif;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.11);
+      z-index: 1000;
+    }
+    .legend-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+  </style>
+</head>
+<body>
+
+<%- include('../partials/student-nav', { page: 'map' }) %>
+
+<div class="map-page">
+  <div id="location-list">
+    <div class="list-heading">Locations</div>
+    <%
+      const groups = { 'Recreation': [], 'Dining': [], 'Campus': [] };
+      mapLocations.forEach(loc => {
+        if (loc.category === 'rec') groups['Recreation'].push(loc);
+        else if (loc.category === 'dining') groups['Dining'].push(loc);
+        else groups['Campus'].push(loc);
+      });
+    %>
+    <% Object.entries(groups).forEach(([group, locs]) => { %>
+      <% if (locs.length > 0) { %>
+        <div class="list-heading" style="margin-top:8px;"><%= group %></div>
+        <% locs.forEach(loc => { %>
+          <% const dotColor = { light:'#16a34a', moderate:'#d97706', busy:'#dc2626', closed:'#6b7280' }[loc.status] || '#6b7280'; %>
+          <button class="loc-item" onclick="flyTo(<%= loc.lat %>, <%= loc.lng %>, '<%= loc.id %>')">
+            <span class="loc-icon"><%= loc.icon %></span>
+            <span class="loc-name"><%= loc.name %></span>
+            <span class="loc-dot" style="background:<%= dotColor %>"></span>
+          </button>
+        <% }) %>
+      <% } %>
+    <% }) %>
+  </div>
+
+  <div style="position:relative; flex:1; height:100%;">
+    <div id="map"></div>
+    <div class="map-legend">
+      <div style="font-weight:700;margin-bottom:6px;">Busyness</div>
+      <div class="d-flex align-items-center mb-1"><span class="legend-dot" style="background:#16a34a"></span>Light</div>
+      <div class="d-flex align-items-center mb-1"><span class="legend-dot" style="background:#d97706"></span>Moderate</div>
+      <div class="d-flex align-items-center mb-1"><span class="legend-dot" style="background:#dc2626"></span>Busy</div>
+      <div class="d-flex align-items-center"><span class="legend-dot" style="background:#6b7280"></span>Closed</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const locations = <%- JSON.stringify(mapLocations) %>;
+
+  const statusColors = { light:'#16a34a', moderate:'#d97706', busy:'#dc2626', closed:'#6b7280' };
+
+  const map = L.map('map', { center:[46.7300,-117.1790], zoom:15, zoomControl:false, minZoom:13, maxZoom:19 });
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    maxZoom:19,
+  }).addTo(map);
+
+  L.control.zoom({ position:'topright' }).addTo(map);
+
+  const markerMap = {};
+  const allLatLngs = [];
+
+  locations.forEach(loc => {
+    const color = statusColors[loc.status] || '#6b7280';
+    const pulse = loc.status !== 'closed' ? `<div class="pin-pulse pulse-${loc.status}"></div>` : '';
+
+    const html = `
+      <div class="pin-wrap">
+        <div class="pin-body" style="background:${color};position:relative;">
+          ${pulse}<span>${loc.icon}</span>
+        </div>
+        <div class="pin-label" style="color:${color}">${loc.name}</div>
+      </div>`;
+
+    const icon = L.divIcon({ html, className:'', iconSize:[100,64], iconAnchor:[50,50], popupAnchor:[0,-52] });
+
+    if (loc.status !== 'closed') {
+      L.circle([loc.lat, loc.lng], { radius:55, color, fillColor:color, fillOpacity:0.13, weight:1.5, opacity:0.45 }).addTo(map);
+    }
+
+    const badgeClass = { Verified:'badge-verified', Crowd:'badge-crowd', Typical:'badge-typical' }[loc.badge] || 'badge-typical';
+    const badgeHtml  = loc.badge ? `<span class="popup-badge ${badgeClass}">${loc.badge}</span><br>` : '';
+    const statusCap  = loc.status.charAt(0).toUpperCase() + loc.status.slice(1);
+
+    const popupHtml = `
+      <div class="popup-name">${loc.name}</div>
+      ${badgeHtml}
+      <div class="popup-status" style="color:${color}">${statusCap}</div>
+      ${loc.updated ? `<div class="popup-meta">${loc.updated}</div>` : ''}
+      ${loc.hours   ? `<div class="popup-meta">${loc.hours}</div>` : ''}
+      <a class="popup-link" href="/student/facilities/${loc.id}">See details</a>`;
+
+    const marker = L.marker([loc.lat, loc.lng], { icon }).addTo(map).bindPopup(popupHtml, { maxWidth:220 });
+    markerMap[loc.id] = marker;
+    allLatLngs.push([loc.lat, loc.lng]);
+  });
+
+  if (allLatLngs.length > 0) {
+    map.fitBounds(allLatLngs, { padding:[50,50] });
+  }
+
+  // Called by sidebar buttons — fly to pin and open its popup
+  function flyTo(lat, lng, id) {
+    map.flyTo([lat, lng], 17, { duration: 1.2 });
+    setTimeout(() => { if (markerMap[id]) markerMap[id].openPopup(); }, 1300);
+    document.querySelectorAll('.loc-item').forEach(b => b.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+  }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

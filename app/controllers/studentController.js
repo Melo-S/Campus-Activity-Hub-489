@@ -1,4 +1,5 @@
-const crypto = require("crypto"); // built-in Node module — used to generate random invite codes
+const crypto = require("crypto");   // built-in Node module — used to generate random invite codes
+const bcrypt = require("bcrypt");   // password hashing — needed for the change-password flow
 const { Op } = require("sequelize"); // Op gives us SQL operators like >, <, BETWEEN, IN
 const { Location, StatusUpdate, Activity, Participant, Friendship, Vote, User, Report } = require("../models");
 
@@ -575,6 +576,129 @@ exports.renderReport = (req, res) => {
   // contentType and contentId come from the link on the activity/facility detail page
   const { contentType, contentId } = req.query;
   res.render("student/report", { contentType, contentId, error: null, success: false });
+};
+
+// ── Profile ───────────────────────────────────────────────────────────────
+
+exports.renderProfile = async (req, res) => {
+  // Fetch a fresh copy from DB so the form always shows current values
+  const user = await User.findByPk(req.session.user.id, {
+    attributes: ["id", "name", "email", "role"],
+  });
+  res.render("student/profile", {
+    user,
+    success: req.query.success || null,
+    error: req.query.error || null,
+  });
+};
+
+exports.updateProfile = async (req, res) => {
+  const { name, email } = req.body;
+  const userId = req.session.user.id;
+
+  if (!name || !email) return res.redirect("/student/profile?error=All fields are required.");
+
+  // Check if another account already uses the new email
+  const existing = await User.findOne({ where: { email: email.toLowerCase() } });
+  if (existing && existing.id !== userId) {
+    return res.redirect("/student/profile?error=That email is already in use.");
+  }
+
+  await User.update(
+    { name, email: email.toLowerCase() },
+    { where: { id: userId } }
+  );
+
+  // Update the session so the navbar shows the new name immediately
+  req.session.user.name  = name;
+  req.session.user.email = email.toLowerCase();
+
+  res.redirect("/student/profile?success=profile");
+};
+
+exports.changePassword = async (req, res) => {
+  const { currentPassword, newPassword, confirmNewPassword } = req.body;
+  const userId = req.session.user.id;
+
+  if (newPassword !== confirmNewPassword) {
+    return res.redirect("/student/profile?error=New passwords do not match.");
+  }
+  if (newPassword.length < 6) {
+    return res.redirect("/student/profile?error=Password must be at least 6 characters.");
+  }
+
+  const user = await User.findByPk(userId);
+  const match = await bcrypt.compare(currentPassword, user.password);
+  if (!match) {
+    return res.redirect("/student/profile?error=Current password is incorrect.");
+  }
+
+  const hashed = await bcrypt.hash(newPassword, 10);
+  await User.update({ password: hashed }, { where: { id: userId } });
+
+  res.redirect("/student/profile?success=password");
+};
+
+// ── Campus Map ────────────────────────────────────────────────────────────
+
+// Hardcoded WSU Pullman coordinates for each location name
+const LOCATION_COORDS = {
+  // Academic / study
+  "Terrell Library":            { lng: -117.18025, lat: 46.72810, icon: "📚", category: "library" },
+
+  // Recreation
+  "UREC":                       { lng: -117.17498, lat: 46.73255, icon: "🏋️", category: "rec"     },
+  "Student Recreation Center":  { lng: -117.15453, lat: 46.73743, icon: "🏋️", category: "rec"     },
+  "Bohler Gym":                 { lng: -117.17338, lat: 46.73180, icon: "🏀", category: "rec"     },
+  "Hollingbery Fieldhouse":     { lng: -117.17150, lat: 46.73205, icon: "🏟️", category: "rec"     },
+  "Mooberry Track":             { lng: -117.17210, lat: 46.73320, icon: "🏃", category: "rec"     },
+  "Beasley Coliseum":           { lng: -117.17155, lat: 46.73098, icon: "🎭", category: "other"   },
+
+  // Dining
+  "Southside Café":             { lng: -117.18238, lat: 46.72395, icon: "🍽️", category: "dining"  },
+  "The Palouser":               { lng: -117.18365, lat: 46.72832, icon: "🍔", category: "dining"  },
+  "Chinook Student Center":     { lng: -117.17848, lat: 46.73012, icon: "🥗", category: "dining"  },
+  "Ferdinand's":                { lng: -117.18012, lat: 46.72665, icon: "🍦", category: "dining"  },
+
+  // Campus hubs
+  "CUB (Compton Union Building)": { lng: -117.18350, lat: 46.72850, icon: "☕", category: "other" },
+  "Glenn Terrell Mall":         { lng: -117.18155, lat: 46.72918, icon: "🌿", category: "other"   },
+  "WSU Bookstore":              { lng: -117.18330, lat: 46.72870, icon: "🛍️", category: "other"   },
+  "Health & Wellness Services": { lng: -117.18105, lat: 46.72758, icon: "🏥", category: "other"   },
+};
+
+exports.renderMap = async (req, res) => {
+  const now = new Date();
+  const locations = await Location.findAll({
+    include: [{
+      model: StatusUpdate,
+      where: { expiresAt: { [Op.gt]: now } },
+      order: [["createdAt", "DESC"]],
+      limit: 1,
+      required: false,
+    }],
+  });
+
+  const mapLocations = locations.map(loc => {
+    const coords = LOCATION_COORDS[loc.name] || null;
+    if (!coords) return null;
+    const latest = loc.StatusUpdates[0];
+    const typical = !latest ? getTypicalBusyness(loc.type, now) : null;
+    const resolvedStatus = latest ? latest.status : (typical || "closed");
+    const badge = latest ? (latest.type === "verified" ? "Verified" : "Crowd") : (typical ? "Typical" : null);
+    return {
+      id: loc.id,
+      name: loc.name,
+      status: resolvedStatus,
+      statusColor: statusColor(resolvedStatus),
+      badge,
+      hours: loc.hours || null,
+      updated: latest ? timeAgo(latest.createdAt) : (typical ? "Typical pattern" : null),
+      ...coords,
+    };
+  }).filter(Boolean);
+
+  res.render("student/map", { mapLocations });
 };
 
 exports.submitReport = async (req, res) => {
