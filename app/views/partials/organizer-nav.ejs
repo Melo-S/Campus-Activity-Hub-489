@@ -16,6 +16,20 @@
         <li class="nav-item">
           <a class="nav-link <%= page === 'dashboard' ? 'active fw-semibold' : '' %>" href="/organizer/dashboard">Dashboard</a>
         </li>
+        <li class="nav-item">
+          <% if (applicationStatus === 'approved' && defaultLocationId) { %>
+            <a class="nav-link <%= page === 'manage-facility' ? 'active fw-semibold' : '' %>" href="/organizer/facilities/<%= defaultLocationId %>">Manage Facility</a>
+          <% } else { %>
+            <span class="nav-link text-white-50">Manage Facility</span>
+          <% } %>
+        </li>
+        <li class="nav-item">
+          <% if (applicationStatus === 'approved' && defaultLocationId) { %>
+            <a class="nav-link <%= page === 'post-update' ? 'active fw-semibold' : '' %>" href="/organizer/facilities/<%= defaultLocationId %>/updates/new">Post Update</a>
+          <% } else { %>
+            <span class="nav-link text-white-50">Post Update</span>
+          <% } %>
+        </li>
         <%# Apply link only shown when organizer is not yet approved %>
         <% if (typeof applicationStatus === 'undefined' || applicationStatus !== 'approved') { %>
           <li class="nav-item">

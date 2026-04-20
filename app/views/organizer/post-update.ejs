@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Post Verified Update — Campus Activity Hub</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+<%- include('../partials/organizer-nav', { page: 'post-update', applicationStatus, defaultLocationId }) %>
+
+<main class="container my-4" style="max-width:760px;">
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+    <div>
+      <div class="pill mb-2">Organizer/Staff</div>
+      <h1 class="h4 fw-semibold mb-1">Post verified update</h1>
+      <div class="text-muted">Publish an official busyness update that stays active for two hours.</div>
+    </div>
+    <a href="/organizer/facilities/<%= location.id %>" class="btn btn-outline-secondary btn-sm">Back to facility</a>
+  </div>
+
+  <% if (error) { %>
+    <div class="alert alert-danger py-2 mb-3"><%= error %></div>
+  <% } %>
+
+  <div class="card shadow-sm mb-3">
+    <div class="card-body">
+      <div class="text-muted small mb-1">Facility</div>
+      <div class="fw-semibold"><%= location.name %></div>
+      <div class="text-muted small mt-2"><%= location.hours || 'Hours not listed yet' %></div>
+      <% if (currentVerified) { %>
+        <div class="alert alert-light border mt-3 mb-0">
+          Current verified update: <strong class="text-capitalize"><%= currentVerified.status %></strong>
+          · posted <%= currentVerified.posted %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h2 class="h6 fw-semibold mb-3">Update form</h2>
+    <form method="POST" action="/organizer/facilities/<%= location.id %>/updates">
+      <div class="mb-3">
+        <label class="form-label" for="status">Busy level</label>
+        <select id="status" name="status" class="form-select" required>
+          <option value="">Select a level</option>
+          <option value="light">Light</option>
+          <option value="moderate">Moderate</option>
+          <option value="busy">Busy</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Expires</label>
+        <input type="text" class="form-control" value="Automatically 2 hours after publishing" readonly>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-sm">Publish verified update</button>
+    </form>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

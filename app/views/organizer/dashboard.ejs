@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<%- include('../partials/organizer-nav', { page: 'dashboard', applicationStatus }) %>
+<%- include('../partials/organizer-nav', { page: 'dashboard', applicationStatus, defaultLocationId }) %>
 
 <main class="container my-4">
   <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
@@ -34,6 +34,11 @@
 
   <% if (success === 'applied') { %>
     <div class="alert alert-success py-2 mb-3">Your verification request was submitted and is now waiting for admin review.</div>
+  <% } %>
+  <% if (error === 'approval') { %>
+    <div class="alert alert-danger py-2 mb-3">You need an approved organizer application before opening facility tools.</div>
+  <% } else if (error === 'location') { %>
+    <div class="alert alert-warning py-2 mb-3">That facility could not be found.</div>
   <% } %>
 
   <div class="row g-3 mb-4">
@@ -71,9 +76,9 @@
         <div class="card-body">
           <h2 class="h6 fw-semibold mb-3">Quick actions</h2>
           <div class="d-grid gap-2">
-            <% if (applicationStatus === 'approved') { %>
-              <a href="#facility-preview" class="btn btn-primary btn-sm">Post verified update</a>
-              <a href="#facility-preview" class="btn btn-outline-secondary btn-sm">Manage facility</a>
+            <% if (applicationStatus === 'approved' && defaultLocationId) { %>
+              <a href="/organizer/facilities/<%= defaultLocationId %>/updates/new" class="btn btn-primary btn-sm">Post verified update</a>
+              <a href="/organizer/facilities/<%= defaultLocationId %>" class="btn btn-outline-secondary btn-sm">Manage facility</a>
             <% } else { %>
               <button class="btn btn-primary btn-sm" type="button" disabled>Post verified update</button>
               <button class="btn btn-outline-secondary btn-sm" type="button" disabled>Manage facility</button>
@@ -83,7 +88,7 @@
             </a>
           </div>
           <div class="text-muted small mt-3">
-            Facility management routes are the next build step. This dashboard already reflects whether those actions should be locked or unlocked.
+            Approved organizers can now jump directly into a facility page and publish verified updates.
           </div>
         </div>
       </div>
@@ -106,9 +111,11 @@
                 <span class="badge text-bg-light text-capitalize"><%= location.type %></span>
               </div>
               <div class="text-muted small mb-3"><%= location.hours || 'Hours not listed yet.' %></div>
-              <button class="btn btn-sm btn-outline-secondary" type="button" disabled>
-                <%= applicationStatus === 'approved' ? 'Facility tools coming next' : 'Locked until approval' %>
-              </button>
+              <% if (applicationStatus === 'approved') { %>
+                <a href="/organizer/facilities/<%= location.id %>" class="btn btn-sm btn-outline-secondary">Open facility tools</a>
+              <% } else { %>
+                <button class="btn btn-sm btn-outline-secondary" type="button" disabled>Locked until approval</button>
+              <% } %>
             </div>
           </div>
         <% }) %>
