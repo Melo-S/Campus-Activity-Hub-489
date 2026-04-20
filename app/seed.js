@@ -2,7 +2,7 @@
 // Re-running wipes and recreates everything (force: true) — dev only
 
 const bcrypt = require("bcrypt");
-const { sequelize, User, Location, StatusUpdate, Activity, Participant, OrganizerProfile } = require("./models");
+const { sequelize, User, Location, StatusUpdate, Activity, Participant, OrganizerProfile, Report } = require("./models");
 
 async function seed() {
   // sync() creates missing tables without touching existing data
@@ -215,7 +215,7 @@ async function seed() {
   });
 
   // A crowd report on Southside (lasts 30 min)
-  await StatusUpdate.create({
+  const crowdUpdate = await StatusUpdate.create({
     locationId: southside.id,
     userId: student.id,
     status: "moderate",
@@ -266,6 +266,25 @@ async function seed() {
   await Participant.create({ activityId: studySession.id, userId: student.id, status: "rsvp" });
 
   console.log("Activities seeded.");
+
+  // ── Reports ───────────────────────────────────────────────────────────────
+  // Seed one activity report and one status update report so the moderation
+  // queue is ready to demo on a fresh database.
+  await Report.create({
+    reporterId: pendingOrganizer.id,
+    contentType: "activity",
+    contentId: studySession.id,
+    reason: "This activity post looks misleading for a class study session and should be reviewed.",
+  });
+
+  await Report.create({
+    reporterId: organizer.id,
+    contentType: "statusUpdate",
+    contentId: crowdUpdate.id,
+    reason: "This crowd update looks stale and may no longer reflect the actual wait time.",
+  });
+
+  console.log("Reports seeded.");
 
   console.log("\nSeed complete! Test accounts:");
   console.log("  student@wsu.edu            / password123  (role: student)");
