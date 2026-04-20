@@ -1,6 +1,6 @@
 sessions.sqlite
 
-# Local working notes, not pushed
+# Local working notes
 docs-local/
 .vscode/
 .idea/
