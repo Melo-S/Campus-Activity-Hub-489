@@ -1,48 +1,190 @@
-# Campus-Activity-Hub-489
- 
-A web app where students can see campus activity/busyness (Library/Rec/Dining) and create activities (study/workout/dinner) to invite friends, track RSVPs, and check in.
+# Campus Activity Hub
 
-## The Problem
+Campus Activity Hub is a role based campus web app built for CPTS 489 Web Application Development.
 
-- "Is the library packed right now?"
-- "Anyone want to grab dinner at 6?"
-- "Is the rec center busy?"
+Students can:
 
-Students waste time walking to crowded facilities or struggle to coordinate simple activities with friends.
+- view facility busyness for campus locations
+- create and join activities
+- RSVP and check in
+- report problematic content
 
-## The Solution
+Organizers can:
 
-**Campus Activity Hub** combines:
-1. **Live Facility Dashboard** - Crowdsourced "busy levels" for library, rec center, dining halls
-2. **Activity Planning** - Create activities, invite friends, RSVP, and check-in
+- apply for verification
+- post verified facility updates after approval
 
-No campus API needed. "Live" data comes from:
-- Student-submitted status updates (with auto-expiration)
-- Verified organizer/staff updates
-- Activity RSVPs and check-ins as crowd signals
+Admins can:
 
-## Mid Deliverable (UI Mockups & Mapping)
-
-- Entry point: `index.html` (open in browser). Contains hero/summary and use case ↔ screen mapping table.
-- Theme: Bootstrap 5.3 + custom tokens in `assets/css/styles.css` for colors, spacing, typography (Inter).
-- Screens: 23 total in `/screens` (Student S01–S14, Organizer O01–O05, Admin A01–A04). Shared header/footer/navigation for consistency.
-- Package: `CampusActivityHub-mockups.zip` in repo root (includes index.html, assets/, screens/).
-- Mapping: Use case ↔ screen mapping is visible in `index.html` under the “Use Case ↔ Screen Mapping” section.
-
-### Open locally
-- Windows: double-click `index.html` or run `start index.html`.
-- Mac/Linux: `open index.html` (macOS) or `xdg-open index.html` (Linux).
-
-### Suggested next tasks (for team pick-up)
-1) Upgrade remaining wireframes to full mockups: SCR-S11 (My Schedule), SCR-S12 (Friends), SCR-S13 (Invites), SCR-S14 (Report), SCR-O04 (Manage Facility), SCR-O05 (Organizer Analytics).
-2) Add explicit error/empty/success states per use case (e.g., rate limit UC-S05, duplicate vote UC-S06, invite-only/full UC-S08/11, already reported UC-S12, invalid hours UC-O03, not authorized UC-O02, duplicate facility UC-A03).
-3) Accessibility pass: ARIA labels, focus order, contrast check on primary color, descriptive button text.
-4) Responsive polish: tighten mobile layouts (card stacking, tab spacing, nav collapse spacing).
-5) Sample data/storyboard: realistic content (names, timestamps, counts) to narrate flows for demo.
-6) Demo prep (Deliverable 3): slide deck with screenshots and callouts mapping use cases to screens.
-7) Optional: cross-link screens with hrefs to simulate navigation for a click-through demo.
+- approve or reject organizer applications
+- moderate reported content
+- manage location records
 
 ## Team
-Kaleb Kebede  
-Melvin Sanare  
-Modeste Houenou
+
+- Kaleb Kebede
+- Melvin Sanare
+- Modeste Houenou
+
+## Tech Stack
+
+- Node.js
+- Express 5
+- EJS
+- Sequelize
+- SQLite
+- `express-session` with `connect-sqlite3`
+
+## Project Structure
+
+- `app/` application source code
+- `app/controllers/` controller logic
+- `app/models/` Sequelize models and associations
+- `app/routes/` route definitions
+- `app/views/` EJS templates
+- `assets/` shared CSS and static assets
+- `screens/` mockups from the earlier milestone
+- `index.html` mockup overview page from the mid submission
+
+## Requirements
+
+Install the following before running the project:
+
+- Node.js 18 or later
+- npm
+
+## Environment Variables
+
+This project can run without a custom `.env` file, but you may create one inside `app/` if you want to override defaults.
+
+Optional variables:
+
+```env
+SESSION_SECRET=your_custom_secret
+PORT=3000
+```
+
+If no `.env` file is provided:
+
+- `SESSION_SECRET` falls back to `dev_secret`
+- `PORT` falls back to `3000`
+
+## Install Dependencies
+
+From the repo root:
+
+```powershell
+cd app
+npm install
+```
+
+## Database Restore
+
+This project uses SQLite, so the database export is the file itself.
+
+Main database file:
+
+- `app/database.sqlite`
+
+Session database file:
+
+- `sessions.sqlite`
+
+### Option A: Restore from the included SQLite file
+
+If `app/database.sqlite` is already present in the ZIP you submit, that is the restore file. Keep it in place and start the app.
+
+### Option B: Rebuild a fresh demo database
+
+If you want to regenerate the database with the demo accounts and sample data:
+
+```powershell
+Remove-Item app\database.sqlite -ErrorAction SilentlyContinue
+Remove-Item sessions.sqlite -ErrorAction SilentlyContinue
+node app\seed.js
+```
+
+This creates a fresh SQLite database with seeded users, organizer applications, status updates, activities, and reports.
+
+## Start the Application
+
+Development mode:
+
+```powershell
+cd app
+npm run dev
+```
+
+Standard start:
+
+```powershell
+cd app
+npm start
+```
+
+The application runs at:
+
+- `http://127.0.0.1:3000`
+
+Note:
+
+- On this Windows machine, `127.0.0.1` is safer than `localhost` because another IPv6 service can sometimes intercept `localhost:3000`.
+
+## Demo Accounts
+
+After running `node app\seed.js`, use:
+
+- Student: `student@wsu.edu` / `password123`
+- Organizer approved: `organizer@wsu.edu` / `password123`
+- Organizer pending: `pending-organizer@wsu.edu` / `password123`
+- Admin: `admin@wsu.edu` / `password123`
+
+## Major Routes
+
+- `/login`
+- `/student/home`
+- `/organizer/dashboard`
+- `/admin/dashboard`
+
+## Notes for Reviewers
+
+- Do not include `node_modules` in the submission ZIP.
+- For SQLite, include `app/database.sqlite` directly in the ZIP.
+- If schema fields change during development, delete `app/database.sqlite` and run `node app\seed.js` again.
+
+## Clean Setup Checklist
+
+These are the exact steps a reviewer should be able to follow:
+
+```powershell
+git clone <repo-url>
+cd Campus-Activity-Hub-489
+cd app
+npm install
+cd ..
+node app\seed.js
+cd app
+npm start
+```
+
+Then open:
+
+- `http://127.0.0.1:3000/login`
+
+## Current Submission Status
+
+Implemented and demo ready:
+
+- auth and role routing
+- student facility and activity flows
+- organizer verification flow
+- admin verification queue
+- admin moderation queue
+- admin location management
+
+Still part of final submission prep:
+
+- final PDF assembly
+- screenshots of the running app
+- MP4 demo video
+- final ZIP packaging
