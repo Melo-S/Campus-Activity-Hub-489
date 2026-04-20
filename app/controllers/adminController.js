@@ -12,6 +12,8 @@ function parseApplicationNote(note = "") {
   return details;
 }
 
+const LOCATION_TYPES = ["library", "rec", "dining", "other"];
+
 async function loadReportContent(report) {
   if (report.contentType === "activity") {
     const activity = await Activity.findByPk(report.contentId, {
@@ -177,4 +179,77 @@ exports.removeReportedContent = async (req, res) => {
 
   await report.update({ status: "reviewed" });
   return res.redirect("/admin/moderation-queue?success=removed");
+};
+
+exports.renderLocations = async (req, res) => {
+  const locations = await Location.findAll({ order: [["name", "ASC"]] });
+
+  const locationCards = await Promise.all(locations.map(async (location) => {
+    const [statusUpdateCount, activityCount] = await Promise.all([
+      StatusUpdate.count({ where: { locationId: location.id } }),
+      Activity.count({ where: { locationId: location.id } }),
+    ]);
+
+    return {
+      location,
+      statusUpdateCount,
+      activityCount,
+      canDelete: statusUpdateCount === 0 && activityCount === 0,
+    };
+  }));
+
+  res.render("admin/locations", {
+    locationCards,
+    locationTypes: LOCATION_TYPES,
+    success: req.query.success || null,
+    error: req.query.error || null,
+  });
+};
+
+exports.createLocation = async (req, res) => {
+  const name = req.body.name?.trim() || "";
+  const type = req.body.type?.trim() || "other";
+  const description = req.body.description?.trim() || null;
+  const hours = req.body.hours?.trim() || null;
+
+  if (!name || !LOCATION_TYPES.includes(type)) {
+    return res.redirect("/admin/locations?error=invalid");
+  }
+
+  await Location.create({ name, type, description, hours });
+  return res.redirect("/admin/locations?success=created");
+};
+
+exports.updateLocation = async (req, res) => {
+  const location = await Location.findByPk(req.params.id);
+  if (!location) return res.redirect("/admin/locations?error=notfound");
+
+  const name = req.body.name?.trim() || "";
+  const type = req.body.type?.trim() || "other";
+  const description = req.body.description?.trim() || null;
+  const hours = req.body.hours?.trim() || null;
+
+  if (!name || !LOCATION_TYPES.includes(type)) {
+    return res.redirect("/admin/locations?error=invalid");
+  }
+
+  await location.update({ name, type, description, hours });
+  return res.redirect("/admin/locations?success=updated");
+};
+
+exports.deleteLocation = async (req, res) => {
+  const location = await Location.findByPk(req.params.id);
+  if (!location) return res.redirect("/admin/locations?error=notfound");
+
+  const [statusUpdateCount, activityCount] = await Promise.all([
+    StatusUpdate.count({ where: { locationId: location.id } }),
+    Activity.count({ where: { locationId: location.id } }),
+  ]);
+
+  if (statusUpdateCount > 0 || activityCount > 0) {
+    return res.redirect("/admin/locations?error=linked");
+  }
+
+  await location.destroy();
+  return res.redirect("/admin/locations?success=deleted");
 };
