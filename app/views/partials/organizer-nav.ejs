@@ -1,0 +1,45 @@
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+  <div class="container">
+    <a class="navbar-brand fw-semibold d-flex align-items-center gap-2" href="/organizer/dashboard">
+      <svg width="20" height="25" viewBox="0 0 20 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 1C5.03 1 1 5.03 1 10c0 6.75 9 14 9 14s9-7.25 9-14c0-4.97-4.03-9-9-9z" fill="white"/>
+        <circle cx="10" cy="10" r="3.5" fill="#981e32"/>
+      </svg>
+      <span class="d-none d-sm-inline">Campus Activity Hub</span>
+      <span class="d-sm-none">CAH</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#organizerNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="organizerNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link <%= page === 'dashboard' ? 'active fw-semibold' : '' %>" href="/organizer/dashboard">Dashboard</a>
+        </li>
+        <%# Apply link only shown when organizer is not yet approved %>
+        <% if (typeof applicationStatus === 'undefined' || applicationStatus !== 'approved') { %>
+          <li class="nav-item">
+            <a class="nav-link <%= page === 'apply' ? 'active fw-semibold' : '' %>" href="/organizer/apply">Apply</a>
+          </li>
+        <% } %>
+      </ul>
+      <div class="d-flex gap-2 align-items-center">
+        <div class="dropdown">
+          <button class="btn btn-outline-light btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+            <span class="d-none d-lg-inline"><%= currentUser?.name %></span>
+            <span class="d-lg-none">Me</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><span class="dropdown-item-text text-muted small text-capitalize"><%= currentUser?.role %></span></li>
+            <li><hr class="dropdown-divider my-1"></li>
+            <li>
+              <form method="POST" action="/logout" class="m-0">
+                <button class="dropdown-item text-danger" type="submit">Logout</button>
+              </form>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
