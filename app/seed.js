@@ -205,83 +205,74 @@ async function seed() {
   const now = new Date();
   const addMinutes = (date, mins) => new Date(date.getTime() + mins * 60000);
 
-  // A verified organizer update on UREC (lasts 2 hours) — shows "Verified" badge
-  await StatusUpdate.create({
-    locationId: urec.id,
-    userId: organizer.id,
-    status: "busy",
-    type: "verified",
-    expiresAt: addMinutes(now, 120),
+  const [urecUpdate] = await StatusUpdate.findOrCreate({
+    where: { locationId: urec.id, userId: organizer.id, type: "verified" },
+    defaults: { status: "busy", expiresAt: addMinutes(now, 120) },
   });
 
-  // A crowd report on Southside (lasts 30 min)
-  const crowdUpdate = await StatusUpdate.create({
-    locationId: southside.id,
-    userId: student.id,
-    status: "moderate",
-    type: "crowd",
-    expiresAt: addMinutes(now, 30),
+  const [crowdUpdate] = await StatusUpdate.findOrCreate({
+    where: { locationId: southside.id, userId: student.id, type: "crowd" },
+    defaults: { status: "moderate", expiresAt: addMinutes(now, 30) },
   });
-
-  // Library and CUB have NO active reports — so they'll show "Typical" busyness
-  // This demonstrates both states side by side in the UI
 
   console.log("Status updates seeded.");
 
   // ── Activities ────────────────────────────────────────────────────────────
-  const studySession = await Activity.create({
-    creatorId: student.id,
-    locationId: library.id,
-    type: "study",
-    title: "CS489 Final Project Study Group",
-    description: "Working through the final deliverable together. All CS489 students welcome!",
-    scheduledAt: addMinutes(now, 90),  // starts in 90 min
-    maxParticipants: 6,
-    inviteCode: "CS489-STUDY",
+  const [studySession] = await Activity.findOrCreate({
+    where: { inviteCode: "CS489-STUDY" },
+    defaults: {
+      creatorId: student.id,
+      locationId: library.id,
+      type: "study",
+      title: "CS489 Final Project Study Group",
+      description: "Working through the final deliverable together. All CS489 students welcome!",
+      scheduledAt: addMinutes(now, 90),
+      maxParticipants: 6,
+    },
   });
 
-  await Activity.create({
-    creatorId: student.id,
-    locationId: urec.id,
-    type: "workout",
-    title: "Evening Gym Session",
-    description: "Lifting + cardio. Casual pace, all fitness levels welcome.",
-    scheduledAt: addMinutes(now, 240), // starts in 4 hours
-    maxParticipants: 4,
-    inviteCode: "GYM-EVE",
+  await Activity.findOrCreate({
+    where: { inviteCode: "GYM-EVE" },
+    defaults: {
+      creatorId: student.id,
+      locationId: urec.id,
+      type: "workout",
+      title: "Evening Gym Session",
+      description: "Lifting + cardio. Casual pace, all fitness levels welcome.",
+      scheduledAt: addMinutes(now, 240),
+      maxParticipants: 4,
+    },
   });
 
-  await Activity.create({
-    creatorId: student.id,
-    locationId: southside.id,
-    type: "dinner",
-    title: "Dinner @ Southside",
-    description: "Meeting at 6pm for dinner before the study session. Join if you want!",
-    scheduledAt: addMinutes(now, 30),  // soon
-    maxParticipants: null,
-    inviteCode: "DINNER01",
+  await Activity.findOrCreate({
+    where: { inviteCode: "DINNER01" },
+    defaults: {
+      creatorId: student.id,
+      locationId: southside.id,
+      type: "dinner",
+      title: "Dinner @ Southside",
+      description: "Meeting at 6pm for dinner before the study session. Join if you want!",
+      scheduledAt: addMinutes(now, 30),
+      maxParticipants: null,
+    },
   });
 
-  // Auto-RSVP the creator to their own study session
-  await Participant.create({ activityId: studySession.id, userId: student.id, status: "rsvp" });
+  await Participant.findOrCreate({
+    where: { activityId: studySession.id, userId: student.id },
+    defaults: { status: "rsvp" },
+  });
 
   console.log("Activities seeded.");
 
   // ── Reports ───────────────────────────────────────────────────────────────
-  // Seed one activity report and one status update report so the moderation
-  // queue is ready to demo on a fresh database.
-  await Report.create({
-    reporterId: pendingOrganizer.id,
-    contentType: "activity",
-    contentId: studySession.id,
-    reason: "This activity post looks misleading for a class study session and should be reviewed.",
+  await Report.findOrCreate({
+    where: { reporterId: pendingOrganizer.id, contentType: "activity", contentId: studySession.id },
+    defaults: { reason: "This activity post looks misleading for a class study session and should be reviewed." },
   });
 
-  await Report.create({
-    reporterId: organizer.id,
-    contentType: "statusUpdate",
-    contentId: crowdUpdate.id,
-    reason: "This crowd update looks stale and may no longer reflect the actual wait time.",
+  await Report.findOrCreate({
+    where: { reporterId: organizer.id, contentType: "statusUpdate", contentId: crowdUpdate.id },
+    defaults: { reason: "This crowd update looks stale and may no longer reflect the actual wait time." },
   });
 
   console.log("Reports seeded.");
