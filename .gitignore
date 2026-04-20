@@ -1,1 +1,10 @@
 sessions.sqlite
+
+# Local working notes, not pushed
+docs-local/
+.vscode/
+.idea/
+*.local
+.env.local
+Thumbs.db
+.DS_Store
