@@ -9,6 +9,8 @@ const { sequelize } = require("./models");
 
 const authRoutes = require("./routes/authRoutes");
 const studentRoutes = require("./routes/studentRoutes");
+const organizerRoutes = require("./routes/organizerRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 
 const app = express();
 
@@ -39,10 +41,8 @@ app.use((req, res, next) => {
 // Routes
 app.use(authRoutes);
 app.use(studentRoutes);
-
-// Placeholders for teammates to replace with real portals
-app.get("/admin/dashboard",     (req, res) => res.send("Admin dashboard — coming soon"));
-app.get("/organizer/dashboard", (req, res) => res.send("Organizer dashboard — coming soon"));
+app.use(organizerRoutes);
+app.use(adminRoutes);
 
 // 404 — catches any route that didn’t match above
 app.use((req, res) => {

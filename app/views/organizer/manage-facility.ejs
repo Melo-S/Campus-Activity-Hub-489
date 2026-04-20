@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manage Facility — Campus Activity Hub</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+<%- include('../partials/organizer-nav', { page: 'manage-facility', applicationStatus, defaultLocationId }) %>
+
+<main class="container my-4">
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+    <div>
+      <div class="pill mb-2">Organizer/Staff</div>
+      <h1 class="h4 fw-semibold mb-1"><%= location.name %></h1>
+      <div class="text-muted">Review current visibility and publish verified updates for this location.</div>
+    </div>
+    <a href="/organizer/facilities/<%= location.id %>/updates/new" class="btn btn-primary btn-sm">Post verified update</a>
+  </div>
+
+  <% if (success === 'posted') { %>
+    <div class="alert alert-success py-2 mb-3">Verified update published. Students now see it as the latest trusted update for this facility.</div>
+  <% } %>
+
+  <div class="row g-3 mb-4">
+    <div class="col-12 col-lg-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <div class="text-muted small mb-1">Hours</div>
+          <div class="fw-semibold"><%= location.hours || 'Hours not listed yet' %></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <div class="text-muted small mb-1">Latest verified update</div>
+          <% if (latestVerified) { %>
+            <div class="fw-semibold text-capitalize text-<%= latestVerified.statusColor %>"><%= latestVerified.status %></div>
+            <div class="text-muted small mt-1">Posted <%= latestVerified.posted %> by <%= latestVerified.postedBy %></div>
+          <% } else { %>
+            <div class="fw-semibold">No active verified update</div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <div class="text-muted small mb-1">Latest crowd update</div>
+          <% if (latestCrowd) { %>
+            <div class="fw-semibold text-capitalize text-<%= latestCrowd.statusColor %>"><%= latestCrowd.status %></div>
+            <div class="text-muted small mt-1">Posted <%= latestCrowd.posted %> by <%= latestCrowd.postedBy %></div>
+          <% } else { %>
+            <div class="fw-semibold">No active crowd update</div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-3">
+    <div class="card-body">
+      <h2 class="h6 fw-semibold mb-2">Facility details</h2>
+      <p class="mb-0"><%= location.description || 'No facility description is available yet.' %></p>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <h2 class="h6 fw-semibold mb-0">Active update feed</h2>
+        <span class="text-muted small">Verified updates appear first for students when they are the latest post.</span>
+      </div>
+
+      <% if (!updates.length) { %>
+        <p class="text-muted mb-0">No active updates are posted for this location right now.</p>
+      <% } else { %>
+        <div class="list-group list-group-flush">
+          <% updates.forEach((update) => { %>
+            <div class="list-group-item px-0">
+              <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                <div>
+                  <div class="fw-semibold text-capitalize">
+                    <span class="text-<%= update.statusColor %>"><%= update.status %></span>
+                    <span class="badge badge-soft ms-2"><%= update.type === 'verified' ? 'Verified' : 'Crowd' %></span>
+                  </div>
+                  <div class="text-muted small">
+                    Posted by <%= update.postedBy %> (<%= update.postedByRole %>) · <%= update.posted %>
+                  </div>
+                </div>
+                <div class="text-muted small">Expires <%= new Date(update.expiresAt).toLocaleString() %></div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Organizer Dashboard — Campus Activity Hub</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+<%- include('../partials/organizer-nav', { page: 'dashboard', applicationStatus, defaultLocationId }) %>
+
+<main class="container my-4">
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+    <div>
+      <div class="pill mb-2">Organizer/Staff</div>
+      <h1 class="h4 fw-semibold mb-1">Organizer Dashboard</h1>
+      <div class="text-muted">Manage facility updates and track your verification status.</div>
+    </div>
+    <div class="text-end">
+      <% if (applicationStatus === 'approved') { %>
+        <span class="badge bg-success">Approved</span>
+      <% } else if (applicationStatus === 'pending') { %>
+        <span class="badge bg-warning text-dark">Pending review</span>
+      <% } else if (applicationStatus === 'rejected') { %>
+        <span class="badge bg-danger">Rejected</span>
+      <% } else { %>
+        <span class="badge bg-secondary">Not applied</span>
+      <% } %>
+      <div class="text-muted small mt-2"><%= profile?.organization || 'No organization submitted yet' %></div>
+    </div>
+  </div>
+
+  <% if (success === 'applied') { %>
+    <div class="alert alert-success py-2 mb-3">Your verification request was submitted and is now waiting for admin review.</div>
+  <% } %>
+  <% if (error === 'approval') { %>
+    <div class="alert alert-danger py-2 mb-3">You need an approved organizer application before opening facility tools.</div>
+  <% } else if (error === 'location') { %>
+    <div class="alert alert-warning py-2 mb-3">That facility could not be found.</div>
+  <% } %>
+
+  <div class="row g-3 mb-4">
+    <div class="col-12 col-lg-7">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h2 class="h6 fw-semibold mb-3">Verification status</h2>
+          <% if (applicationStatus === 'approved') { %>
+            <p class="mb-2">Your organizer access is active. You can post verified updates once the facility tools are opened in the next slice.</p>
+            <div class="text-muted small">
+              <% if (profile?.reviewedAt) { %>
+                Approved on <%= new Date(profile.reviewedAt).toLocaleString() %>
+              <% } else { %>
+                Approved recently
+              <% } %>
+            </div>
+          <% } else if (applicationStatus === 'pending') { %>
+            <p class="mb-2">Your application is in the admin review queue. Verified posting stays locked until an admin approves it.</p>
+            <div class="alert alert-warning py-2 mb-0">
+              Waiting on admin review. Post Update is intentionally disabled until approval.
+            </div>
+          <% } else if (applicationStatus === 'rejected') { %>
+            <p class="mb-3">Your last request was rejected. You can reopen the application and submit updated information.</p>
+            <a href="/organizer/apply" class="btn btn-outline-danger btn-sm">Update application</a>
+          <% } else { %>
+            <p class="mb-3">You have not applied for organizer verification yet.</p>
+            <a href="/organizer/apply" class="btn btn-primary btn-sm">Start application</a>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-5">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h2 class="h6 fw-semibold mb-3">Quick actions</h2>
+          <div class="d-grid gap-2">
+            <% if (applicationStatus === 'approved' && defaultLocationId) { %>
+              <a href="/organizer/facilities/<%= defaultLocationId %>/updates/new" class="btn btn-primary btn-sm">Post verified update</a>
+              <a href="/organizer/facilities/<%= defaultLocationId %>" class="btn btn-outline-secondary btn-sm">Manage facility</a>
+            <% } else { %>
+              <button class="btn btn-primary btn-sm" type="button" disabled>Post verified update</button>
+              <button class="btn btn-outline-secondary btn-sm" type="button" disabled>Manage facility</button>
+            <% } %>
+            <a href="/organizer/apply" class="btn btn-outline-dark btn-sm <%= applicationStatus === 'approved' ? 'disabled' : '' %>">
+              <%= applicationStatus ? 'Review application details' : 'Apply for verification' %>
+            </a>
+          </div>
+          <div class="text-muted small mt-3">
+            Approved organizers can now jump directly into a facility page and publish verified updates.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm" id="facility-preview">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <h2 class="h6 fw-semibold mb-0">Facility preview</h2>
+        <span class="text-muted small">Showing <%= locations.length %> campus locations</span>
+      </div>
+
+      <div class="row g-3">
+        <% locations.forEach((location) => { %>
+          <div class="col-12 col-md-6">
+            <div class="border rounded p-3 h-100">
+              <div class="d-flex justify-content-between gap-2 mb-2">
+                <div class="fw-semibold"><%= location.name %></div>
+                <span class="badge text-bg-light text-capitalize"><%= location.type %></span>
+              </div>
+              <div class="text-muted small mb-3"><%= location.hours || 'Hours not listed yet.' %></div>
+              <% if (applicationStatus === 'approved') { %>
+                <a href="/organizer/facilities/<%= location.id %>" class="btn btn-sm btn-outline-secondary">Open facility tools</a>
+              <% } else { %>
+                <button class="btn btn-sm btn-outline-secondary" type="button" disabled>Locked until approval</button>
+              <% } %>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

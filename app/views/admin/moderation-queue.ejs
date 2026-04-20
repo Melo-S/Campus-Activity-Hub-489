@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Moderation Queue — Campus Activity Hub</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+<%- include('../partials/admin-nav', { page: 'moderation' }) %>
+
+<main class="container my-4">
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+    <div>
+      <div class="pill mb-2">Admin</div>
+      <h1 class="h4 fw-semibold mb-1">Reports and moderation queue</h1>
+      <div class="text-muted">Review reported content, dismiss false reports, or remove the underlying post.</div>
+    </div>
+  </div>
+
+  <% if (success === 'resolved') { %>
+    <div class="alert alert-success py-2 mb-3">Report marked as reviewed. The content stays live.</div>
+  <% } else if (success === 'removed') { %>
+    <div class="alert alert-warning py-2 mb-3">Reported content removed and report marked as reviewed.</div>
+  <% } %>
+
+  <% if (error === 'notfound') { %>
+    <div class="alert alert-danger py-2 mb-3">That report could not be found.</div>
+  <% } %>
+
+  <% if (!reportCards.length) { %>
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="h6 fw-semibold mb-2">No pending reports</h2>
+        <p class="text-muted mb-0">The moderation queue is currently empty.</p>
+      </div>
+    </div>
+  <% } %>
+
+  <% reportCards.forEach(({ report, content }) => { %>
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+          <div>
+            <div class="fw-semibold"><%= content.title %></div>
+            <div class="text-muted small">
+              <span class="text-capitalize"><%= report.contentType %></span>
+              <% if (content.subtitle) { %> · <%= content.subtitle %><% } %>
+            </div>
+          </div>
+          <span class="badge bg-warning text-dark">Pending</span>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-12 col-lg-4">
+            <div class="small text-uppercase text-muted mb-1">Reporter</div>
+            <div><%= report.User?.name || 'Unknown user' %></div>
+            <div class="text-muted small"><%= report.User?.email || 'No email' %></div>
+          </div>
+          <div class="col-12 col-lg-4">
+            <div class="small text-uppercase text-muted mb-1">Reported on</div>
+            <div><%= new Date(report.createdAt).toLocaleString() %></div>
+          </div>
+          <div class="col-12 col-lg-4">
+            <div class="small text-uppercase text-muted mb-1">Content state</div>
+            <div><%= content.exists ? 'Still live' : 'Already missing' %></div>
+          </div>
+          <div class="col-12">
+            <div class="small text-uppercase text-muted mb-1">Reason</div>
+            <div><%= report.reason %></div>
+          </div>
+          <div class="col-12">
+            <div class="small text-uppercase text-muted mb-1">Content summary</div>
+            <div><%= content.detail %></div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap mt-3">
+          <form method="POST" action="/admin/reports/<%= report.id %>/resolve" class="m-0">
+            <button type="submit" class="btn btn-success btn-sm">Resolve report</button>
+          </form>
+          <form method="POST" action="/admin/reports/<%= report.id %>/remove-content" class="m-0">
+            <button type="submit" class="btn btn-outline-danger btn-sm">Remove content</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  <% }) %>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

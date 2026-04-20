@@ -2,7 +2,7 @@
 // Re-running wipes and recreates everything (force: true) — dev only
 
 const bcrypt = require("bcrypt");
-const { sequelize, User, Location, StatusUpdate, Activity, Participant } = require("./models");
+const { sequelize, User, Location, StatusUpdate, Activity, Participant, OrganizerProfile, Report } = require("./models");
 
 async function seed() {
   // sync() creates missing tables without touching existing data
@@ -162,12 +162,44 @@ async function seed() {
     where: { email: "organizer@wsu.edu" },
     defaults: { name: "Demo Organizer", password: orgPass, role: "organizer", isVerified: true },
   });
+  const [pendingOrganizer] = await User.findOrCreate({
+    where: { email: "pending-organizer@wsu.edu" },
+    defaults: { name: "Pending Organizer", password: orgPass, role: "organizer", isVerified: false },
+  });
   await User.findOrCreate({
     where: { email: "admin@wsu.edu" },
     defaults: { name: "Demo Admin", password: adminPass, role: "admin" },
   });
 
   console.log("Users seeded.");
+
+  // ── Organizer Applications ────────────────────────────────────────────────
+  // One already approved (ready to post verified updates) and one still pending
+  // so the admin verification queue has something to review on first boot.
+  const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  await OrganizerProfile.findOrCreate({
+    where: { userId: organizer.id },
+    defaults: {
+      organization: "WSU Recreation Center",
+      applicationNote: "Staff member for UREC, responsible for posting busy-level updates.",
+      applicationStatus: "approved",
+      appliedAt: weekAgo,
+      reviewedAt: weekAgo,
+      isVerified: true,
+    },
+  });
+  await OrganizerProfile.findOrCreate({
+    where: { userId: pendingOrganizer.id },
+    defaults: {
+      organization: "Cougar Cycling Club",
+      applicationNote: "I lead the student cycling club and want to post verified rides at Mooberry Track.",
+      applicationStatus: "pending",
+      appliedAt: new Date(),
+      isVerified: false,
+    },
+  });
+
+  console.log("Organizer applications seeded.");
 
   // ── Status Updates ─────────────────────────────────────────────────────────
   const now = new Date();
@@ -183,7 +215,7 @@ async function seed() {
   });
 
   // A crowd report on Southside (lasts 30 min)
-  await StatusUpdate.create({
+  const crowdUpdate = await StatusUpdate.create({
     locationId: southside.id,
     userId: student.id,
     status: "moderate",
@@ -235,10 +267,30 @@ async function seed() {
 
   console.log("Activities seeded.");
 
+  // ── Reports ───────────────────────────────────────────────────────────────
+  // Seed one activity report and one status update report so the moderation
+  // queue is ready to demo on a fresh database.
+  await Report.create({
+    reporterId: pendingOrganizer.id,
+    contentType: "activity",
+    contentId: studySession.id,
+    reason: "This activity post looks misleading for a class study session and should be reviewed.",
+  });
+
+  await Report.create({
+    reporterId: organizer.id,
+    contentType: "statusUpdate",
+    contentId: crowdUpdate.id,
+    reason: "This crowd update looks stale and may no longer reflect the actual wait time.",
+  });
+
+  console.log("Reports seeded.");
+
   console.log("\nSeed complete! Test accounts:");
-  console.log("  student@wsu.edu    / password123  (role: student)");
-  console.log("  organizer@wsu.edu  / password123  (role: organizer)");
-  console.log("  admin@wsu.edu      / password123  (role: admin)");
+  console.log("  student@wsu.edu            / password123  (role: student)");
+  console.log("  organizer@wsu.edu          / password123  (role: organizer, approved)");
+  console.log("  pending-organizer@wsu.edu  / password123  (role: organizer, pending)");
+  console.log("  admin@wsu.edu              / password123  (role: admin)");
   console.log("\nNote: 'Alex Student' renamed to 'Demo Student' — create your own account via /signup");
 
   await sequelize.close();
