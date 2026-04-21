@@ -401,6 +401,18 @@ exports.checkinActivity = async (req, res) => {
   res.redirect(`/student/activities/${activityId}`);
 };
 
+exports.deleteActivity = async (req, res) => {
+  const activityId = req.params.id;
+  const userId = req.session.user.id;
+
+  const activity = await Activity.findByPk(activityId);
+  if (!activity || activity.creatorId !== userId) return res.redirect("/student/schedule");
+
+  await Participant.destroy({ where: { activityId } });
+  await activity.destroy();
+  res.redirect("/student/schedule");
+};
+
 // ── Friends ───────────────────────────────────────────────────────────────
 
 exports.renderFriends = async (req, res) => {

@@ -20,6 +20,7 @@ router.post("/student/activities", requireAuth, student.createActivity);
 router.get("/student/activities/:id", requireAuth, student.renderActivityDetail);
 router.post("/student/activities/:id/rsvp", requireAuth, student.rsvpActivity);
 router.post("/student/activities/:id/checkin", requireAuth, student.checkinActivity);
+router.post("/student/activities/:id/delete", requireAuth, student.deleteActivity);
 
 // Friends
 router.get("/student/friends", requireAuth, student.renderFriends);

@@ -61,7 +61,13 @@
     </div>
 
     <div class="card-footer d-flex align-items-center gap-2">
-      <% if (!myParticipant) { %>
+      <% if (activity.creatorId === currentUser.id) { %>
+        <span class="badge" style="background:#fce8eb;color:#981e32;font-size:0.78rem;padding:5px 10px;">You created this</span>
+        <form method="POST" action="/student/activities/<%= activity.id %>/delete"
+              onsubmit="return confirm('Delete this activity? This cannot be undone.')">
+          <button type="submit" class="btn btn-sm btn-outline-danger ms-1">Delete</button>
+        </form>
+      <% } else if (!myParticipant) { %>
         <form method="POST" action="/student/activities/<%= activity.id %>/rsvp">
           <button type="submit" class="btn btn-primary btn-sm">RSVP</button>
         </form>
